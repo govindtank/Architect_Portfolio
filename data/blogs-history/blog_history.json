@@ -399,6 +399,20 @@
       "tag": "Mobile-AI",
       "wordCount": 813,
       "status": "published"
+    },
+    "jetpack-compose-multiplatform-sharing-business-logic-between-ios-and-android": {
+      "title": "Jetpack Compose Multiplatform: Sharing Business Logic Between iOS and Android",
+      "date": "September 07, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 944,
+      "status": "published"
+    },
+    "android-npu-acceleration-implementing-onnx-runtime-for-ml-inference": {
+      "title": "Android NPU Acceleration: Implementing ONNX Runtime for ML Inference",
+      "date": "September 07, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 688,
+      "status": "published"
     }
   },
   "images": {

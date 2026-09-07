@@ -8,8 +8,17 @@
     <link>https://govindtank.github.io</link>
     <description>Architecture, mobile engineering, AI systems, and technical deep dives.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 07 Sep 2026 09:28:09 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 07 Sep 2026 09:31:21 GMT</lastBuildDate>
     <atom:link href="https://govindtank.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title><![CDATA[Android NPU Acceleration: Implementing ONNX Runtime for ML Inference]]></title>
+      <link>https://govindtank.github.io/blog/android-npu-acceleration-implementing-onnx-runtime-for-ml-inference</link>
+      <guid isPermaLink="true">https://govindtank.github.io/blog/android-npu-acceleration-implementing-onnx-runtime-for-ml-inference</guid>
+      <pubDate>Sun, 06 Sep 2026 18:30:00 GMT</pubDate>
+      <description><![CDATA[This guide covers end-to-end implementation of ONNX Runtime for Android NPU-accelerated ML inference, including model quantization, compatibility validation, and side-by-side latency benchmarks against CPU and GPU exe...
+]]></description>
+      <category>Mobile-Architecture</category>
+    </item>
     <item>
       <title><![CDATA[Android NPU Acceleration: Implementing ONNX Runtime for Mobile ML Inference]]></title>
       <link>https://govindtank.github.io/blog/android-npu-acceleration-implementing-onnx-runtime-for-mobile-ml-inference</link>
@@ -18,6 +27,15 @@
       <description><![CDATA[If you are building production Android ML inference for low-power computer vision or on-device NLP, you should skip NNAPI entirely and use ONNX Runtime’s QNN execution provider with a strict CPU fallback, not the defa...
 ]]></description>
       <category>Mobile-AI</category>
+    </item>
+    <item>
+      <title><![CDATA[Jetpack Compose Multiplatform: Sharing Business Logic Between iOS and Android]]></title>
+      <link>https://govindtank.github.io/blog/jetpack-compose-multiplatform-sharing-business-logic-between-ios-and-android</link>
+      <guid isPermaLink="true">https://govindtank.github.io/blog/jetpack-compose-multiplatform-sharing-business-logic-between-ios-and-android</guid>
+      <pubDate>Sun, 06 Sep 2026 18:30:00 GMT</pubDate>
+      <description><![CDATA[This post breaks down a real implementation of sharing core business logic across iOS and Android with Jetpack Compose Multiplatform, including how to handle platform-specific API calls without duplicating shared code...
+]]></description>
+      <category>Mobile-Architecture</category>
     </item>
     <item>
       <title><![CDATA[Local LLMs on Android: Llama.cpp GGUF Quantization for Mobile Edge AI]]></title>
