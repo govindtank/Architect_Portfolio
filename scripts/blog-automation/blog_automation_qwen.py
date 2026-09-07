@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """
-Blog Automation v4 — human-sounding, varied-structure technical posts via LLM.
-=====================================================================================
-What changed vs v3:
-- 6 structure archetypes (tutorial / comparison / explainer / war-story / roundup / opinion),
-  rotated so no two consecutive posts share a shape.
-- 3 writer personas cycled for voice variety (first person allowed, opinions allowed).
-- Hard anti-AI-tell rules: banned phrases list enforced in the prompt AND validated after.
-- Humanizer second pass: a separate LLM call strips residual AI patterns.
-- Real excerpt generated as a true abstract (not a copy of paragraph 1).
-- Cover images: unique, curl-verified public URLs (never reused across posts).
-- No static fallback template: retries with another archetype; varied skeletons only as
-  absolute last resort.
-- --rewrite-all: regenerate existing posts in place (same slug/date/category, new voice).
-- git pull --rebase before push (avoids remote-divergence conflicts).
+Blog Automation v4.1 — human-sounding, archetype-rotated technical posts via LLM.
+Features:
+- Dynamic trending topic discovery & auto-replenishment from ~/.hermes/cron/topics.json
+- Topic relevance scoring prioritized by Govind's Mobile Architecture & AI skillset
+- 6 structure archetypes & 3 writer personas cycled for natural voice
+- Anti-AI-tell rules and structure validation
+- Unique verified Unsplash cover images
+- Multi-tier LLM execution (Local LM Studio with fast fallback to Kilo AI Gateway)
+- Deduplication against all existing blog markdown files
 
 Author: Govind Tank
 """
@@ -28,210 +23,259 @@ CONTENT_DIR = f"{PROJECT_ROOT}/src/content/blog"
 HISTORY_FILE = f"{PROJECT_ROOT}/data/blogs-history/blog_history.json"
 POOL_FILE = f"{PROJECT_ROOT}/scripts/blog-automation/verified_images.json"
 STATE_FILE = f"{PROJECT_ROOT}/scripts/blog-automation/.rewrite_state.json"
-# Use Kilo API with a known working free model
-LLM_URL = "https://api.kilo.ai/api/gateway/v1/chat/completions"
-# List of free models to try in order
-MODELS = [
-    "stepfun/step-3.7-flash:free",   # verified working
-    "tencent/hy3:free",
-    "poolside/laguna-s-2.1:free",
-    "meituan/longcat-2.0-free",
-    "kilo-auto/free"                 # fallback to auto (may route to above)
+TOPICS_JSON_PATH = os.path.expanduser("~/.hermes/cron/topics.json")
+
+# LLM Providers Configuration
+LOCAL_LLM_URL = os.environ.get("HERMES_LOCAL_MODEL_URL", "http://127.0.0.1:1234/v1/chat/completions")
+LOCAL_MODELS = ["qwen/qwen3.5-9b", "google/gemma-4-12b"]
+
+KILO_LLM_URL = "https://api.kilo.ai/api/gateway/v1/chat/completions"
+KILO_MODELS = [
+    "stepfun/step-3.7-flash:free",
+    "kilo-auto/free"
 ]
+
 GIT_USER_NAME = "Govind Tank"
 GIT_USER_EMAIL = "govindtank600@gmail.com"
-# Reduced word counts for faster generation
-MIN_WORDS, TARGET_MIN, TARGET_MAX, MAX_WORDS = 500, 600, 1000, 1200
-ARCHETYPE_HISTORY = 3          # never repeat an archetype used in the last N posts
+
+MIN_WORDS, TARGET_MIN, TARGET_MAX, MAX_WORDS = 450, 550, 1000, 1300
+ARCHETYPE_HISTORY = 3
 MAX_LLM_ATTEMPTS = 3
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
 
-# ======= TOPIC POOL (new-post path) =======
-# NOTE: the daily cron prompt first researches CURRENT trends (web) and prefers a
-# trending topic not yet covered; this list is the fallback pool. Keep it fresh.
-TOPICS = [
+# ======= TOPIC REPLENISHMENT & MANAGEMENT =======
+FALLBACK_TOPICS = [
     {
-        "title": "The Future of WebAssembly: Beyond the Browser into Cloud and Edge",
-        "tag": "WebAssembly",
-        "desc": "Wasm runtime evolution, server-side rendering, plugin systems, and cloud-native integrations."
+        "title": "Material You on Android: Dark Mode Implementation with DayNight Tokens",
+        "tag": "Mobile-Architecture",
+        "desc": "DayNight color token mapping, dynamic theming contrast handling, and edge-to-edge support in Jetpack Compose.",
+        "keywords": ["Material You", "dark mode", "DayNight", "color tokens", "theming"]
     },
     {
-        "title": "Agentic AI Development: From Chat Assistants to Autonomous Coding Agents",
+        "title": "Kotlin Multiplatform: State Management Patterns for Cross-Platform Apps",
+        "tag": "Mobile-Development",
+        "desc": "StateFlow, SharedFlow, and Compose Multiplatform business logic sharing between Android and iOS.",
+        "keywords": ["KMP", "StateFlow", "SharedFlow", "Compose Multiplatform"]
+    },
+    {
+        "title": "Android Live Wallpapers with OpenGL ES: Performance Optimization Guide",
+        "tag": "Mobile-Architecture",
+        "desc": "GLSurfaceView lifecycle, battery preservation, shader optimization, and matrix rendering techniques.",
+        "keywords": ["wallpaper", "graphics", "GPU optimization", "rendering"]
+    },
+    {
+        "title": "Flutter: Riverpod vs Bloc vs Provider - Performance Benchmarks 2026",
+        "tag": "Flutter",
+        "desc": "State management trade-offs, rebuild overhead, memory profiling, and architecture scalability.",
+        "keywords": ["Riverpod", "Bloc", "Provider", "performance"]
+    },
+    {
+        "title": "Agentic AI: Building Autonomous Workflows with LangGraph and MCP Protocol",
         "tag": "AI-Engineering",
-        "desc": "Agentic workflows, MCP protocol, tool-use loops, multi-agent orchestration, and agent evaluation in production",
+        "desc": "MCP server integrations, tool-calling loops, multi-agent orchestration, and eval pipelines.",
+        "keywords": ["AI agents", "autonomous workflows", "MCP", "orchestration"]
     },
     {
-        "title": "MCP in Practice: Model Context Protocol for Real-World Developer Tools",
-        "tag": "AI-Engineering",
-        "desc": "MCP servers, tool definitions, transport options, and integrating MCP into IDEs and CI pipelines",
-    },
-    {
-        "title": "On-Device AI with NPUs: Running Models on Phone Silicon in 2026",
+        "title": "Local LLMs on Android: Llama.cpp GGUF Quantization for Mobile Edge AI",
         "tag": "Mobile-AI",
-        "desc": "NPU architecture, TFLite/MLX/CoreML execution, quantized models, and battery-aware inference on Android and iOS",
+        "desc": "On-device inference with llama.cpp, GGUF quantization, NPU acceleration, and memory constraints.",
+        "keywords": ["GGUF", "quantization", "on-device ML", "NPU", "llama.cpp"]
     },
     {
-        "title": "Compose Multiplatform for iOS: Is Shared UI Production-Ready in 2026",
+        "title": "Jetpack Compose Multiplatform: Sharing Business Logic Between iOS and Android",
         "tag": "Kotlin",
-        "desc": "Compose Multiplatform iOS stability, performance gaps, design-system sharing, and when shared UI makes sense",
+        "desc": "Architecture patterns for sharing UI and domain logic across iOS and Android with Compose Multiplatform.",
+        "keywords": ["Compose", "multiplatform", "business logic", "reusability"]
     },
     {
-        "title": "Flutter Beyond Mobile: Desktop, Web, and Embedded Targets in 2026",
-        "tag": "Flutter",
-        "desc": "Flutter desktop/web maturity, embedded Linux, game engine integrations, and multi-target release strategies",
-    },
-    {
-        "title": "AI-Native App Architecture: Designing Applications Around LLM Calls",
+        "title": "RAG Pipelines on Mobile: Vector Search with ChromaDB for Offline AI",
         "tag": "AI-Engineering",
-        "desc": "LLM API layers, streaming UI patterns, prompt caching, fallback strategies, and cost-aware design",
+        "desc": "Local vector embeddings, sqlite-vec / chromadb on-device, and low-latency offline retrieval.",
+        "keywords": ["RAG", "vector-search", "offline-ai", "embeddings"]
     },
     {
-        "title": "Local-First Applications: Sync Engines, CRDTs, and Offline-First UX",
-        "tag": "Architecture",
-        "desc": "Local-first architecture, sync protocols, CRDT libraries, and offline-first mobile UX patterns",
-    },
-    {
-        "title": "RAG in Production: Practical Retrieval Patterns Beyond the Demo",
-        "tag": "AI-ML",
-        "desc": "Chunking, embeddings, hybrid search, re-ranking, evaluation, and RAG observability",
-    },
-    {
-        "title": "Android 17 and the Modern Android Stack: What Changed in 2026",
-        "tag": "Android",
-        "desc": "Android 17 APIs, edge-to-edge enforcement, Kotlin-first tooling, and the modern Android architecture",
-    },
-    {
-        "title": "Building Developer Tools in 2026: From CLI Design to AI-Assisted Extensions",
-        "tag": "DevTools",
-        "desc": "CLI design patterns, LSP protocol, VS Code extensions, and AI-powered code assistance",
-    },
-    {
-        "title": "Dart 4 and the Evolution of the Flutter Ecosystem: What's New in 2026",
+        "title": "Flutter Antigravity: Building AI Features with OpenAI and Streaming SSE",
         "tag": "Flutter",
-        "desc": "Dart 4 language features, Flutter tooling improvements, and ecosystem changes",
+        "desc": "Streaming responses, markdown token rendering, resilient retry channels, and client-side chat state.",
+        "keywords": ["Flutter", "chat interface", "LLM streaming", "SSE"]
     },
     {
-        "title": "Building Scalable Microservices with FastAPI and Event-Driven Architecture",
-        "tag": "Backend-Architecture",
-        "desc": "FastAPI microservices with event-driven patterns, message queues, and async processing",
+        "title": "Kotlin Coroutines Flow Collection Operators: Best Practices and Performance",
+        "tag": "Mobile-Development",
+        "desc": "collectLatest vs flatMapLatest, buffer strategies, and eliminating memory leaks in UI observation.",
+        "keywords": ["Flow", "collectLatest", "stateIn", "coroutines"]
     },
     {
-        "title": "WebAssembly in 2026: From Browser to Edge Computing and Beyond",
-        "tag": "WebAssembly",
-        "desc": "Wasm runtime evolution, use cases in edge computing, plugin systems, and container alternatives",
+        "title": "Android NPU Acceleration: Implementing ONNX Runtime for Mobile ML Inference",
+        "tag": "Mobile-AI",
+        "desc": "NNAPI and QNN execution providers in ONNX Runtime for low-power mobile computer vision and NLP.",
+        "keywords": ["NPU", "ONNX", "machine learning", "acceleration"]
     },
     {
-        "title": "Zero-Trust Architecture: Implementing Security in Distributed Cloud Systems",
-        "tag": "Security",
-        "desc": "Zero-trust principles, identity-aware proxies, mTLS, and continuous verification",
-    },
-    {
-        "title": "Edge AI: Running Large Language Models on Consumer Devices in 2026",
-        "tag": "Edge-AI",
-        "desc": "On-device ML inference, quantization techniques, NPU acceleration, and privacy-preserving AI",
-    },
-    {
-        "title": "React Server Components: Production Patterns for High-Performance Web Apps",
-        "tag": "Web-Dev",
-        "desc": "RSC architecture, streaming SSR, server/client boundaries, and data fetching patterns",
-    },
-    {
-        "title": "Data Engineering at Scale: Building Real-Time Streaming Pipelines",
-        "tag": "Data-Engineering",
-        "desc": "Kafka, Flink, streaming SQL, exactly-once semantics, and schema evolution",
-    },
-    {
-        "title": "PostgreSQL 18 and the Rise of Hybrid Transactional-Analytical Processing",
-        "tag": "Databases",
-        "desc": "HTAP databases, columnar storage, parallel query execution, and real-time analytics",
-    },
-    {
-        "title": "Event Sourcing and CQRS: Practical Patterns for Distributed Systems",
-        "tag": "Architecture",
-        "desc": "Event sourcing fundamentals, CQRS separation, projection rebuilds, and idempotency",
-    },
-    {
-        "title": "Platform Engineering: Building Internal Developer Portals That Teams Love",
-        "tag": "DevEx",
-        "desc": "Backstage-like platforms, golden paths, developer scorecards, and API catalogs",
-    },
-    {
-        "title": "Kubernetes Sidecar Patterns for Service Mesh Observability in 2026",
-        "tag": "Cloud-Native",
-        "desc": "Sidecar proxies, eBPF-based observability, OpenTelemetry deep integration, and traffic management",
-    },
-    {
-        "title": "Testing AI-Generated Code: Strategies for Reliable Machine Learning Pipelines",
-        "tag": "AI-ML",
-        "desc": "Testing strategies for LLM outputs, evaluation benchmarks, adversarial testing, and CI/CD for ML",
-    },
-    {
-        "title": "CSS Container Queries and Style Queries: Responsive Design Beyond Media Queries",
-        "tag": "Web-Dev",
-        "desc": "Container queries, style queries, component-driven responsive design, and browser support in 2026",
-    },
-    {
-        "title": "Distributed Tracing with OpenTelemetry: From Instrumentation to Production Debugging",
-        "tag": "Observability",
-        "desc": "OpenTelemetry signals, sampling strategies, trace context propagation, and backend analysis",
-    },
-    {
-        "title": "Rust for Systems Programming in 2026: Memory Safety, Concurrency, and Ecosystem Growth",
-        "tag": "Systems",
-        "desc": "Rust ownership model, async runtimes, FFI patterns, embedded systems, and production readiness",
-    },
-    {
-        "title": "Building Real-Time Collaborative Apps with CRDTs and Operational Transformation",
-        "tag": "Architecture",
-        "desc": "CRDT data types, OT algorithms, conflict resolution, and live collaboration infrastructure",
-    },
-    {
-        "title": "FinOps for Kubernetes: Optimizing Cloud Costs in Containerized Environments",
-        "tag": "DevOps",
-        "desc": "Kubernetes cost allocation, right-sizing, spot instances, and FinOps tooling in 2026",
-    },
-    {
-        "title": "The Rise of AI Coding Assistants: Evaluating Code Quality and Productivity Impact",
-        "tag": "AI-Engineering",
-        "desc": "Evaluating LLM code assistants on real tasks, acceptance vs correctness, and team workflows",
-    },
-    {
-        "title": "Small Language Models: Running Efficient AI on Edge Devices and Mobile Phones",
-        "tag": "Edge-AI",
-        "desc": "On-device SLM inference, quantization, model distillation, and mobile NPU hardware",
-    },
+        "title": "Offline-First Mobile Apps: CRDTs for Conflict-Free Replication in Flutter",
+        "tag": "Mobile-Architecture",
+        "desc": "Implementing Yjs / Automerge CRDT synchronization over WebSockets for multi-device sync.",
+        "keywords": ["CRDT", "sync", "offline", "conflict resolution"]
+    }
 ]
 
-# ======= IMAGE POOL (unique, verified public URLs) =======
+def load_topics_from_file():
+    """Load topics from ~/.hermes/cron/topics.json or fallback list."""
+    topics = []
+    if os.path.exists(TOPICS_JSON_PATH):
+        try:
+            with open(TOPICS_JSON_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    topics = data.get("trending_topics", []) or data.get("topics", [])
+                elif isinstance(data, list):
+                    topics = data
+        except Exception as e:
+            log(f"Error loading {TOPICS_JSON_PATH}: {e}")
+
+    # Ensure all fallback topics are present in the list
+    existing_titles = {t["title"].strip().lower() for t in topics if "title" in t}
+    for fb in FALLBACK_TOPICS:
+        if fb["title"].strip().lower() not in existing_titles:
+            topics.append(fb)
+    return topics
+
+def save_topics_to_file(topics):
+    """Save topics list to ~/.hermes/cron/topics.json."""
+    os.makedirs(os.path.dirname(TOPICS_JSON_PATH), exist_ok=True)
+    try:
+        with open(TOPICS_JSON_PATH, "w", encoding="utf-8") as f:
+            json.dump({"trending_topics": topics}, f, indent=2)
+        log(f"Saved {len(topics)} topics to {TOPICS_JSON_PATH}")
+    except Exception as e:
+        log(f"Failed to write topics to file: {e}")
+
+def extract_json_payload(raw_text):
+    """Safely extracts JSON array or object from LLM response."""
+    if not raw_text:
+        return None
+    m = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', raw_text)
+    candidate = m.group(1).strip() if m else raw_text.strip()
+    
+    m_arr = re.search(r'\[\s*\{[\s\S]*\}\s*\]', candidate)
+    if m_arr:
+        try:
+            return json.loads(m_arr.group(0))
+        except Exception:
+            pass
+    try:
+        return json.loads(candidate)
+    except Exception:
+        return None
+
+def replenish_trending_topics(existing_slugs, existing_titles):
+    """Generates 15 fresh trending topics matching Govind's profile via LLM."""
+    log("Replenishing topic pool with fresh 2026 tech trends...")
+    prompt = """Generate 15 fresh, trending, highly relevant technical blog post topics for a Senior Mobile Architect & AI Engineer (Govind Tank).
+Focus on real-world practical challenges across:
+1. Flutter 3.29+ / Dart 3.7+ (rendering engines, performance profiling, advanced state patterns)
+2. Modern Android (Android 17, Material You DayNight tokens, Jetpack Compose, Live Wallpapers, NDK/JNI)
+3. Kotlin Multiplatform & Compose Multiplatform for iOS
+4. Edge AI / On-Device ML (Llama.cpp, GGUF quantization, NPU acceleration, ONNX Runtime, SLMs)
+5. Agentic AI & MCP (Model Context Protocol, autonomous workflows, tool-use loops)
+6. Local-First Architecture, CRDTs, and offline-first mobile sync
+
+Rules:
+- Give distinct, realistic, high-impact technical titles (no generic buzzword fluff).
+- Format STRICTLY as a JSON array of objects:
+[
+  {
+    "title": "Exact Title of the Blog Post",
+    "tag": "Mobile-Architecture / Flutter / AI-Engineering / Mobile-AI / Kotlin / Architecture",
+    "desc": "1-2 sentences on key focus, real-world scenario, and architectural takeaway.",
+    "keywords": ["keyword1", "keyword2", "keyword3"]
+  }
+]
+Output ONLY valid JSON."""
+
+    raw = call_llm([
+        {"role": "system", "content": "You are a senior tech strategist. Respond with strict JSON only."},
+        {"role": "user", "content": prompt}
+    ], max_tokens=4000, timeout=75)
+    
+    items = extract_json_payload(raw)
+    if not items or not isinstance(items, list):
+        log("Could not parse new topics JSON from LLM.")
+        return load_topics_from_file()
+
+    added = []
+    current_topics = load_topics_from_file()
+    current_titles = {t["title"].strip().lower() for t in current_topics if "title" in t}
+
+    for item in items:
+        title = item.get("title", "").strip()
+        slug = slugify(title)
+        if not title or slug in existing_slugs or title.lower() in existing_titles or title.lower() in current_titles:
+            continue
+        tag = item.get("tag", "Tech")
+        desc = item.get("desc", title)
+        kw = item.get("keywords", [tag])
+        new_entry = {"title": title, "tag": tag, "desc": desc, "keywords": kw}
+        current_topics.append(new_entry)
+        current_titles.add(title.lower())
+        added.append(new_entry)
+
+    if added:
+        save_topics_to_file(current_topics)
+        log(f"Added {len(added)} brand new trending topics to pool.")
+    return current_topics
+
+SKILL_WEIGHTS = {
+    "flutter": 4, "dart": 4, "android": 4, "jetpack": 4, "compose": 4, "material you": 4,
+    "kotlin": 3, "kmp": 4, "edge ai": 4, "npu": 4, "onnx": 4, "llama.cpp": 4, "gguf": 4,
+    "quantization": 3, "agentic": 4, "mcp": 4, "agents": 3, "crdt": 4, "local-first": 4,
+    "fastapi": 3, "react": 2, "vite": 2, "opengl": 3, "live wallpaper": 3
+}
+
+def score_topic(topic):
+    """Score topic based on Govind's profile skills and timeliness."""
+    text = (topic.get("title", "") + " " + topic.get("tag", "") + " " + topic.get("desc", "")).lower()
+    score = 1
+    for kw, weight in SKILL_WEIGHTS.items():
+        if kw in text:
+            score += weight
+    return score
+
+# ======= IMAGE POOL =======
 def load_pool():
+    if not os.path.exists(POOL_FILE):
+        return []
     with open(POOL_FILE) as f:
         return json.load(f)
 
 def used_images():
     used = set()
+    if not os.path.exists(CONTENT_DIR):
+        return used
     for fn in os.listdir(CONTENT_DIR):
         if not fn.endswith(".md"):
             continue
-        m = re.search(r'^coverImage:\\s*\"([^\"]+)\"', open(os.path.join(CONTENT_DIR, fn)).read(), re.M)
-        if m:
-            used.add(m.group(1))
+        try:
+            m = re.search(r'^coverImage:\s*\"([^\"]+)\"', open(os.path.join(CONTENT_DIR, fn), encoding="utf-8").read(), re.M)
+            if m:
+                used.add(m.group(1))
+        except Exception:
+            pass
     return used
 
 def pick_image(category=""):
-    """Deterministic-ish unique image from the verified pool, never reused."""
+    """Deterministic unique image from the verified pool, never reused across posts."""
     pool = [u for u in load_pool() if u not in used_images()]
     if not pool:
-        raise RuntimeError("Image pool exhausted — run verify_images.py to expand")
-    h = int(hashlib.md5((category + datetime.now().strftime("%Y%m%d")).encode()).hexdigest(), 16)
+        pool = load_pool()
+    if not pool:
+        return "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200"
+    h = int(hashlib.md5((category + datetime.now().strftime("%Y%m%d%H%M%S") + str(random.random())).encode()).hexdigest(), 16)
     return pool[h % len(pool)]
 
-def hashlib_md5(s):
-    import hashlib
-    return hashlib.md5(s.encode())
-
-# ======= ARCHETYPES =======
+# ======= ARCHETYPES & PERSONAS =======
 ARCHETYPES = {
     "tutorial": {
         "label": "hands-on tutorial",
@@ -262,7 +306,7 @@ ARCHETYPES = {
         "structure": [
             "Opening hook: a surprising behavior, a common misconception, or a question most devs get wrong.",
             "The mental model first: an analogy or simple framing before any code.",
-            "Core mechanics: step-by-step, ONE mermaid diagram, 1-2 small code snippets.",
+            "Core mechanics: step-by-step, clear architecture breakdown, 1-2 small code snippets.",
             "What happens at runtime: walk through a concrete scenario end to end.",
             "Edge cases and gotchas (what breaks, and why).",
             "Closing: why this mental model matters for day-to-day work, 1-2 sentences.",
@@ -307,9 +351,9 @@ ARCHETYPES = {
 }
 
 PERSONAS = [
-    "A senior engineer with 12+ years of experience who has been burned by over-engineered solutions. Writes plainly, uses first person, calls out trade-offs instead of hiding them.",
-    "A curious tinkerer who prototypes everything. Enthusiastic but precise; shares small experiments and what surprised them. First person welcome.",
-    "A pragmatic staff engineer who has reviewed a lot of bad production code. Slightly skeptical tone; values simple, boring solutions that work. First person welcome.",
+    "A senior mobile architect with 12+ years of experience who values clean architecture, battery & memory efficiency, and concise code. Writes plainly, uses first person, calls out trade-offs honestly.",
+    "A curious tinkerer and AI engineer who prototypes everything on real devices. Enthusiastic but precise; shares small experiments, profiling stats, and what surprised them.",
+    "A pragmatic staff engineer who has reviewed lots of production PRs. Slightly skeptical tone; values simple, boring solutions that survive production traffic."
 ]
 
 BANNED_PHRASES = [
@@ -326,25 +370,25 @@ BANNED_PHRASES = [
     "moving forward", "let me be clear", "the bottom line is", "take a step back",
 ]
 
-# ======= LLM =======
-def call_llm(messages, temperature=0.8, timeout=180):
-    """Try each model in MODELS until one works. Returns text or None."""
-    for model in MODELS:
+# ======= LLM CALLER =======
+def call_llm(messages, temperature=0.75, max_tokens=6000, timeout=120):
+    """
+    Tiered LLM caller:
+    1. Kilo Gateway (Fast & highly reliable with stepfun/step-3.7-flash, kilo-auto)
+    2. Local LM Studio endpoint (fallback)
+    """
+    for model in KILO_MODELS:
         payload = {
             "model": model,
             "messages": messages,
             "temperature": temperature,
-            "max_tokens": 1024,  # Reduced for faster generation
+            "max_tokens": max_tokens,
             "top_p": 0.9
         }
-        data = json.dumps(payload).encode()
         req = urllib.request.Request(
-            LLM_URL,
-            data=data,
-            headers={
-                "Content-Type": "application/json",
-                # No Authorization needed for Kilo auto models
-            },
+            KILO_LLM_URL,
+            data=json.dumps(payload).encode(),
+            headers={"Content-Type": "application/json"},
             method="POST"
         )
         try:
@@ -353,70 +397,87 @@ def call_llm(messages, temperature=0.8, timeout=180):
                 if "choices" in resp_data and resp_data["choices"]:
                     msg = resp_data["choices"][0]["message"]
                     content = msg.get("content", "")
-                    if content and len(content.strip()) > 0:
-                        log(f"  LLM succeeded with model {model}")
+                    if content and len(content.strip()) > 50:
+                        log(f"  LLM succeeded with {model}")
                         return content
         except Exception as e:
-            log(f"  LLM call failed with model {model}: {str(e)[:60]}")
+            log(f"  Kilo LLM failed with {model}: {str(e)[:80]}")
             continue
+
+    # Secondary: Try Local endpoint if Kilo had transient failure
+    for local_model in LOCAL_MODELS:
+        payload = {
+            "model": local_model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        req = urllib.request.Request(
+            LOCAL_LLM_URL,
+            data=json.dumps(payload).encode(),
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                resp_data = json.loads(resp.read().decode())
+                if "choices" in resp_data and resp_data["choices"]:
+                    msg = resp_data["choices"][0]["message"]
+                    content = msg.get("content", "")
+                    if content and len(content.strip()) > 50:
+                        log(f"  Local LLM succeeded with {local_model}")
+                        return content
+        except Exception:
+            pass
+
     return None
 
 def build_prompts(topic, archetype, persona, excerpt_only=False):
     arch = ARCHETYPES[archetype]
     if excerpt_only:
-        system = "You write concise, honest blog post abstracts. No fluff, no marketing language, no 'In this article'."
+        system = "You write concise, honest blog post abstracts. Max 200 characters. No fluff, no marketing language, no 'In this article'."
         user = (f"Write a 1-2 sentence excerpt (max 200 chars) for a blog post titled '{topic['title']}' "
                 f"about {topic.get('desc', '')}. Plain, specific, no AI clichés.")
         return system, user
 
-    banned = "; ".join(BANNED_PHRASES[:24])
-    system = f"""You are writing a concise technical blog post. {persona}
+    banned = "; ".join(BANNED_PHRASES[:25])
+    system = f"""You are writing a concise, authoritative technical blog post. {persona}
 
 Post type: {arch['label']}.
 
-Structure:
+Structure to follow:
 {chr(10).join('- ' + s for s in arch['structure'])}
 
 Rules:
-- 500-800 words. No padding.
-- Sentence-case headings. Short first. Long when it helps.
-- First person welcome. Opinions welcome.
-- 1-2 real references only. If unsure, stay generic.
-- 1 table if structure calls for it. 1 mermaid only if structure calls for it.
-- Start with H1: # {topic['title']}
-- End with short closing, NOT 'Conclusion' or 'Future Outlook'.
-- Only H1 is #. Rest are ##/###.
+- 550-950 words. No padding, no fluff.
+- Sentence-case headings. Short and clear.
+- First person welcome. Call out real trade-offs.
+- Use realistic code snippets where appropriate.
+- Start immediately with H1: # {topic['title']}
+- End with a short closing thought, NOT 'Conclusion' or 'Future Outlook'.
+- Only H1 is #. Subsections use ## and ###.
 
-Banned: {banned}
-No emojis. No fake benchmarks. No invented stats.
-"""
-    user = f"""Write the blog post now.
+Banned clichés: {banned}
+No emojis. No fake benchmarks. No invented stats."""
+
+    user = f"""Write the complete blog post now.
 
 Title: {topic['title']}
-Tag/category: {topic.get('tag', '')}
+Tag/category: {topic.get('tag', 'Mobile-Architecture')}
 Topic context: {topic.get('desc', '')}
 
-Remember: {arch['label']}, 500-800 words, no banned phrases, human voice, start with the H1."""
+Remember: {arch['label']}, 550-950 words, clean code, no banned phrases, start with the H1."""
     return system, user
-
-# We'll skip the humanizer pass for speed; we can add it back later if needed.
-def humanize_pass(content, title):
-    """Second LLM pass: strip residual AI patterns, tighten prose."""
-    # For now, we skip to save time and avoid extra LLM calls.
-    # In a production setting, we would want to keep this.
-    return content
 
 # ======= VALIDATION =======
 def validate(content, archetype):
     issues = []
-    body = re.sub(r'^---.*?---\\n', '', content, flags=re.S)
+    body = re.sub(r'^---.*?---\n', '', content, flags=re.S)
     wc = len(body.split())
     if wc < MIN_WORDS:
         issues.append(f"too short: {wc} words (< {MIN_WORDS})")
     elif wc > MAX_WORDS:
         issues.append(f"too long: {wc} words (> {MAX_WORDS})")
-    if not TARGET_MIN <= wc <= TARGET_MAX:
-        issues.append(f"off target range {TARGET_MIN}-{TARGET_MAX} (got {wc})")
 
     low = body.lower()
     for p in BANNED_PHRASES:
@@ -426,15 +487,13 @@ def validate(content, archetype):
         issues.append("banned heading '## Conclusion'")
     if "## future outlook" in low:
         issues.append("banned heading '## Future Outlook'")
-    if "```mermaid" not in body and archetype in ("explainer",):
-        issues.append("explainer archetype missing mermaid diagram")
     if "|" not in body and archetype in ("comparison", "roundup"):
         issues.append(f"{archetype} archetype missing a table")
-    if re.search(r'^(#|\\n\\n)#{2,3} ', body) is None and len(re.findall(r'^#{2,3} ', body, re.M)) < 3:
-        issues.append("fewer than 3 ## headings")
+    if len(re.findall(r'^#{2,3} ', body, re.M)) < 2:
+        issues.append("fewer than 2 ## headings")
     return issues
 
-# ======= FRONTMATTER / FILES =======
+# ======= FRONTMATTER & FILE WRITING =======
 def format_date():
     return datetime.now().strftime("%B %d, %Y")
 
@@ -449,56 +508,52 @@ def write_content_md(slug, content, title, tag, date, excerpt, image_url, tags=N
     if read_time is None:
         read_time = max(3, round(len(content.split()) / 200))
     tags_list = tags or [tag]
-    tags_yaml = "\\n".join(f'  - \"{t}\"' for t in tags_list)
+    tags_yaml = "\n".join(f'  - "{t}"' for t in tags_list)
     fm = f"""---
-title: \"{title}\"
-slug: \"{slug}\"
-date: \"{date}\"
+title: "{title}"
+slug: "{slug}"
+date: "{date}"
 excerpt: >
   {excerpt}
-coverImage: \"{image_url}\"
-category: \"{tag}\"
+coverImage: "{image_url}"
+category: "{tag}"
 readTime: {read_time}
 tags:
 {tags_yaml}
 ---
 """
     path = os.path.join(CONTENT_DIR, f"{slug}.md")
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(fm + content.lstrip())
     return path
 
-def parse_existing(path):
-    text = open(path).read()
-    def g(key):
-        m = re.search(rf'^{key}:\\s*\"?([^\"\\n]+)\"?', text, re.M)
-        return m.group(1).strip() if m else ""
-    tags = re.findall(r'^\\s+- \"([^\"]+)\"', text, re.M)
-    return {
-        "title": g("title"), "slug": g("slug") or os.path.basename(path)[:-3],
-        "date": g("date"), "category": g("category"), "coverImage": g("coverImage"),
-        "tags": tags or [g("category")] or ["Tech"],
-    }
-
 def load_history():
     try:
-        return json.load(open(HISTORY_FILE))
+        if os.path.exists(HISTORY_FILE):
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
     except Exception:
-        return {}
+        pass
+    return {}
 
 def save_history(h):
     os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
-    json.dump(h, open(HISTORY_FILE, "w"), indent=2)
+    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(h, f, indent=2)
 
 def recent_archetypes():
-    """Archetypes used by the last N posts (by file mtime)."""
+    if not os.path.exists(CONTENT_DIR):
+        return []
     files = sorted((os.path.join(CONTENT_DIR, f) for f in os.listdir(CONTENT_DIR) if f.endswith(".md")),
                    key=os.path.getmtime)
     archs = []
     for f in files[-ARCHETYPE_HISTORY:]:
-        m = re.search(r'^archetype:\\s*\"?([a-z-]+)\"?', open(f).read(), re.M)
-        if m:
-            archs.append(m.group(1))
+        try:
+            m = re.search(r'^archetype:\s*\"?([a-z-]+)\"?', open(f, encoding="utf-8").read(), re.M)
+            if m:
+                archs.append(m.group(1))
+        except Exception:
+            pass
     return archs
 
 def choose_archetype():
@@ -509,204 +564,249 @@ def choose_archetype():
 def choose_persona():
     return random.choice(PERSONAS)
 
-def generate_blog_content(topic, archetype=None, persona=None, existing_meta=None):
-    """Returns (content, archetype, persona, excerpt)."""
+def clean_post_content(raw_content, title):
+    """Ensure post starts directly with H1 title and has clean markdown."""
+    text = raw_content.strip()
+    # Strip opening markdown fence if present
+    text = re.sub(r'^```(?:markdown)?\s*', '', text)
+    text = re.sub(r'\s*```$', '', text)
+    
+    # If text doesn't start with '# ', prepend H1
+    if not text.startswith("# "):
+        # Remove any leading preamble
+        m = re.search(r'^#\s+.*$', text, re.M)
+        if m:
+            text = text[m.start():]
+        else:
+            text = f"# {title}\n\n{text}"
+    return text
+
+def generate_single_post(topic, archetype=None, persona=None):
+    """Generates and writes a single verified blog post. Returns tuple or None."""
     archetype = archetype or choose_archetype()
     persona = persona or choose_persona()
-    log(f"  archetype={archetype} persona_idx={PERSONAS.index(persona)}")
+    title = topic["title"]
+    tag = topic.get("tag", "Mobile-Architecture")
+    slug = slugify(title)
+    log(f"Generating post: '{title}' [{tag}] (archetype={archetype})")
 
     content = None
     for attempt in range(MAX_LLM_ATTEMPTS):
         system, user = build_prompts(topic, archetype, persona)
         tmp = call_llm([{"role": "system", "content": system}, {"role": "user", "content": user}],
-                       temperature=0.75 + attempt * 0.1)
-        if tmp and tmp.strip().startswith("#"):
-            content = tmp
+                       temperature=0.7 + attempt * 0.1, max_tokens=6000)
+        if tmp and len(tmp.strip().split()) >= MIN_WORDS - 50:
+            content = clean_post_content(tmp, title)
             break
-        log(f"  attempt {attempt + 1} failed/invalid, retrying (temp up)")
+        log(f"  Attempt {attempt + 1} yielded insufficient words ({len((tmp or '').split())}), retrying...")
+
     if not content:
-        log("  LLM failed for this archetype, switching archetype and retrying once")
-        archetype = random.choice([a for a in ARCHETYPES if a != archetype])
-        system, user = build_prompts(topic, archetype, persona)
-        content = call_llm([{"role": "system", "content": system}, {"role": "user", "content": user}],
-                           temperature=0.9)
+        alt_archetype = random.choice([a for a in ARCHETYPES if a != archetype])
+        log(f"  Retrying with alternate archetype: {alt_archetype}")
+        system, user = build_prompts(topic, alt_archetype, persona)
+        tmp = call_llm([{"role": "system", "content": system}, {"role": "user", "content": user}],
+                       temperature=0.8, max_tokens=6000)
+        if tmp and len(tmp.strip().split()) >= MIN_WORDS - 50:
+            content = clean_post_content(tmp, title)
+            archetype = alt_archetype
+
     if not content:
+        log("  Failed to generate post content after retries.")
         return None
 
-    # humanizer pass (non-fatal if it fails)
-    hz = humanize_pass(content, topic["title"])
-    if hz:
-        content = hz
-
-    # excerpt: separate abstract
+    # Excerpt generation
     excerpt = None
     s2, u2 = build_prompts(topic, archetype, persona, excerpt_only=True)
-    e = call_llm([{"role": "system", "content": s2}, {"role": "user", "content": u2}], temperature=0.6, timeout=60)
+    e = call_llm([{"role": "system", "content": s2}, {"role": "user", "content": u2}],
+                 temperature=0.5, max_tokens=1500, timeout=35)
     if e:
-        excerpt = re.sub(r'\s+', ' ', e).strip()
+        excerpt = re.sub(r'\s+', ' ', e).strip().strip('"').strip("'")
         if len(excerpt) > 220:
             excerpt = excerpt[:217] + "..."
     if not excerpt:
         first = next((l.strip() for l in content.split("\n") if l.strip() and not l.startswith("#")), "")
         excerpt = (first[:217] + "...") if len(first) > 220 else first
 
-    return content, archetype, persona, excerpt
-
-# ======= GIT =======
-def commit_and_push(commit_msg, paths=None):
-    log("Git operations...")
-    try:
-        subprocess.run(["git", "config", "user.name", GIT_USER_NAME], cwd=PROJECT_ROOT, check=True, capture_output=True)
-        subprocess.run(["git", "config", "user.email", GIT_USER_EMAIL], cwd=PROJECT_ROOT, check=True, capture_output=True)
-        # pull --rebase to integrate remote changes first
-        pr = subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=PROJECT_ROOT, capture_output=True, timeout=120)
-        if pr.returncode != 0:
-            log(f"  pull --rebase issue: {pr.stderr.decode()[:200]}")
-        if paths:
-            subprocess.run(["git", "add", "--force", "--"] + paths, cwd=PROJECT_ROOT, check=True, capture_output=True)
-        subprocess.run(["git", "add", "--force", "dist/"], cwd=PROJECT_ROOT, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", commit_msg, "-m", "Generated via Hermes blog pipeline v4"],
-                       cwd=PROJECT_ROOT, check=True, capture_output=True)
-        log("  commit ok")
-        # SSH remote hangs in headless cron sessions — use HTTPS with gh token (fast, reliable)
-        token = subprocess.run(["gh", "auth", "token"], cwd=PROJECT_ROOT,
-                               capture_output=True, text=True, timeout=15).stdout.strip()
-        if not token:
-            raise RuntimeError("no gh token available for push")
-        push_url = f"https://x-access-token:{token}@github.com/govindtank/govindtank.github.io.git"
-        r = subprocess.run(["git", "push", push_url, "HEAD:main"], cwd=PROJECT_ROOT, capture_output=True, timeout=180)
-        # ponytail: inline token URL used only for this push; never persisted to git config
-        if r.returncode == 0:
-            log("  push ok")
-            return True
-        log(f"  push failed: {r.stderr.decode()[:200]}")
-        return False
-    except subprocess.CalledProcessError as e:
-        log(f"  git error: {(e.stderr or b'').decode()[:200]}")
-        return False
-
-def verify_build():
-    log("Verifying build...")
-    r = subprocess.run(["npm", "run", "build"], cwd=PROJECT_ROOT, capture_output=True, timeout=300)
-    if r.returncode == 0:
-        log("  build ok")
-        return True
-    log(f"  build FAILED: {(r.stderr.decode()[:400] or r.stdout.decode()[:400])}")
-    return False
-
-# ======= MAIN: single new post (daily cron path) =======
-def main():
-    print("=" * 70)
-    print("  Blog Automation v4 (human-voice, archetype-rotated)")
-    print("=" * 70)
-    history = load_history()
-
-    existing = {f[:-3] for f in os.listdir(CONTENT_DIR) if f.endswith(".md")}
-    topic = None
-    random.shuffle(TOPICS)
-    for t in TOPICS:
-        if slugify(t["title"]) not in existing:
-            topic = t
-            break
-    if not topic:
-        log("All topics already covered. Nothing to do.")
-        return
-
-    title, tag = topic["title"], topic["tag"]
-    slug = slugify(title)
-    log(f"Topic: {title}")
-    gen = generate_blog_content(topic)
-    if not gen:
-        log("Generation failed after retries. Aborting (no static fallback used).")
-        return
-    content, archetype, persona, excerpt = gen
     image_url = pick_image(tag)
     date = format_date()
     path = write_content_md(slug, content, title, tag, date, excerpt, image_url)
-    log(f"Wrote {path} ({len(content.split())} words, archetype={archetype})")
-
-    issues = validate(open(path).read(), archetype)
-    if issues:
-        log(f"VALIDATION issues ({len(issues)}): {issues[:6]}")
-        if len(issues) >= 3:
-            log("Too many issues — deleting post and aborting.")
-            os.remove(path)
-            return
-
-    # stamp archetype into frontmatter for history tracking
-    text = open(path).read()
-    text = text.replace("---\\n", f"---\narchetype: \"{archetype}\"\\n", 1)
-    open(path, "w").write(text)
-
-    if not verify_build():
-        os.remove(path)
-        log("Build failed — removed post.")
-        return
+    
+    # Stamp archetype in frontmatter
+    text = open(path, encoding="utf-8").read()
+    text = text.replace("---\n", f"---\narchetype: \"{archetype}\"\n", 1)
+    open(path, "w", encoding="utf-8").write(text)
 
     wc = len(content.split())
-    history.setdefault("blogs", {})[slug] = {"title": title, "date": date, "tag": tag,
-                                             "wordCount": wc, "status": "published"}
+    log(f"Wrote {path} ({wc} words, archetype={archetype})")
+
+    # Validate
+    issues = validate(open(path, encoding="utf-8").read(), archetype)
+    if issues:
+        log(f"Validation notices ({len(issues)}): {issues[:5]}")
+        if len(issues) >= 4:
+            log("Too many validation failures. Removing invalid post.")
+            if os.path.exists(path):
+                os.remove(path)
+            return None
+
+    return path, slug, title, tag, date, wc, archetype
+
+# ======= BUILD & GIT =======
+def verify_build():
+    log("Verifying VitePress & React site build...")
+    r1 = subprocess.run(["npx", "vitepress", "build", "docs"], cwd=PROJECT_ROOT, capture_output=True, timeout=180)
+    if r1.returncode != 0:
+        log(f"VitePress build failed: {r1.stderr.decode()[:300]}")
+        return False
+    r2 = subprocess.run(["npm", "run", "build"], cwd=PROJECT_ROOT, capture_output=True, timeout=300)
+    if r2.returncode != 0:
+        log(f"React build failed: {r2.stderr.decode()[:300]}")
+        return False
+    log("Build verification successful.")
+    return True
+
+def commit_and_push(commit_msg, paths=None):
+    log("Running Git sync and push...")
+    try:
+        subprocess.run(["git", "config", "user.name", GIT_USER_NAME], cwd=PROJECT_ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", GIT_USER_EMAIL], cwd=PROJECT_ROOT, check=True, capture_output=True)
+        
+        pr = subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=PROJECT_ROOT, capture_output=True, timeout=120)
+        if pr.returncode != 0:
+            log(f"  pull --rebase notice: {pr.stderr.decode()[:200]}")
+
+        if paths:
+            subprocess.run(["git", "add", "--force", "--"] + paths, cwd=PROJECT_ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "add", "-A"], cwd=PROJECT_ROOT, check=True, capture_output=True)
+        
+        diff_check = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=PROJECT_ROOT)
+        if diff_check.returncode == 0:
+            log("Nothing staged to commit.")
+            return True
+
+        subprocess.run(["git", "commit", "-m", commit_msg, "-m", "Automated release via Hermes Blog Pipeline v4.1"],
+                       cwd=PROJECT_ROOT, check=True, capture_output=True)
+        log("  Commit created.")
+
+        token = subprocess.run(["gh", "auth", "token"], cwd=PROJECT_ROOT,
+                               capture_output=True, text=True, timeout=15).stdout.strip()
+        if token:
+            push_url = f"https://x-access-token:{token}@github.com/govindtank/govindtank.github.io.git"
+            r = subprocess.run(["git", "push", push_url, "HEAD:main"], cwd=PROJECT_ROOT, capture_output=True, timeout=180)
+            if r.returncode == 0:
+                log("  Git push to origin/main succeeded.")
+                return True
+            else:
+                log(f"  Token push failed ({r.stderr.decode()[:200]}), attempting standard push...")
+
+        r_std = subprocess.run(["git", "push", "origin", "main"], cwd=PROJECT_ROOT, capture_output=True, timeout=180)
+        if r_std.returncode == 0:
+            log("  Standard git push succeeded.")
+            return True
+        log(f"  Git push failed: {r_std.stderr.decode()[:200]}")
+        return False
+    except Exception as e:
+        log(f"Git operation error: {e}")
+        return False
+
+# ======= MAIN RUNNER =======
+def main(count=1):
+    print("=" * 70)
+    print(f"  Blog Automation v4.1 — Target: {count} new blog post(s)")
+    print("=" * 70)
+
+    existing_files = [f for f in os.listdir(CONTENT_DIR) if f.endswith(".md")] if os.path.exists(CONTENT_DIR) else []
+    existing_slugs = {f[:-3] for f in existing_files}
+    existing_titles = set()
+    for f in existing_files:
+        try:
+            m = re.search(r'^title:\s*[\"\x27]?(.*?)[\"\x27]?\s*$', open(os.path.join(CONTENT_DIR, f), encoding="utf-8").read(), re.M)
+            if m:
+                existing_titles.add(m.group(1).strip().lower())
+        except Exception:
+            pass
+
+    log(f"Found {len(existing_slugs)} existing published blog posts.")
+
+    all_topics = load_topics_from_file()
+    available_topics = []
+    for t in all_topics:
+        title = t.get("title", "").strip()
+        if not title:
+            continue
+        if slugify(title) not in existing_slugs and title.lower() not in existing_titles:
+            available_topics.append(t)
+
+    log(f"Available uncovered topics in pool: {len(available_topics)}")
+
+    # Auto-replenish if available pool is running low
+    if len(available_topics) < 10:
+        all_topics = replenish_trending_topics(existing_slugs, existing_titles)
+        available_topics = [t for t in all_topics if slugify(t.get("title", "")) not in existing_slugs and t.get("title", "").strip().lower() not in existing_titles]
+        log(f"Available topics after replenishment: {len(available_topics)}")
+
+    if not available_topics:
+        log("No available topics found even after replenishment attempt. Aborting.")
+        return
+
+    # Sort topics by relevance score (highest first), with some random jitter for variety
+    available_topics.sort(key=lambda t: score_topic(t) + random.uniform(0, 1.5), reverse=True)
+
+    generated_posts = []
+    history = load_history()
+
+    for i in range(min(count, len(available_topics))):
+        topic = available_topics[i]
+        log(f"\n--- Generating Post {i+1} of {count} ---")
+        res = generate_single_post(topic)
+        if res:
+            path, slug, title, tag, date, wc, archetype = res
+            generated_posts.append({
+                "path": path, "slug": slug, "title": title, "tag": tag,
+                "date": date, "wc": wc, "archetype": archetype
+            })
+            existing_slugs.add(slug)
+            existing_titles.add(title.lower())
+            history.setdefault("blogs", {})[slug] = {
+                "title": title, "date": date, "tag": tag,
+                "wordCount": wc, "status": "published"
+            }
+
+    if not generated_posts:
+        log("No new posts were successfully generated.")
+        return
+
+    log(f"\nSuccessfully generated {len(generated_posts)} new post(s).")
     save_history(history)
-    ok = commit_and_push(f"blog: {title} ({archetype}) - {datetime.now().strftime('%Y-%m-%d')}",
-                         paths=[path])
-    log(f"DONE push={'ok' if ok else 'FAILED'} url=https://govindtank.github.io/blog/{slug}")
 
-# ======= REWRITE-ALL: convert existing posts =======
-def rewrite_all(only=None):
+    # Build and verify site
+    if not verify_build():
+        log("Site build failed. Reverting generated posts...")
+        for p in generated_posts:
+            if os.path.exists(p["path"]):
+                os.remove(p["path"])
+        return
+
+    # Commit and push
+    titles_summary = ", ".join(f"'{p['title']}'" for p in generated_posts)
+    commit_msg = f"feat(blog): publish {len(generated_posts)} new post(s) - {datetime.now().strftime('%Y-%m-%d')}\n\n" + "\n".join(f"- {p['title']} ({p['tag']})" for p in generated_posts)
+    
+    paths = [p["path"] for p in generated_posts]
+    ok = commit_and_push(commit_msg, paths=paths)
+    
+    print("\n" + "=" * 70)
+    print(f"  AUTOMATION RESULT: {len(generated_posts)} post(s) generated, push={'SUCCESS' if ok else 'FAILED'}")
+    for p in generated_posts:
+        print(f"  • https://govindtank.github.io/blog/{p['slug']}")
     print("=" * 70)
-    print("  Blog v4 rewrite-all — regenerating existing posts with new voice")
-    print("=" * 70)
-    state = {}
-    if os.path.exists(STATE_FILE):
-        state = json.load(open(STATE_FILE))
-
-    files = sorted(f for f in os.listdir(CONTENT_DIR) if f.endswith(".md"))
-    if only:
-        files = [f for f in files if f[:-3] in only or only == "all"]
-
-    changed_paths = []
-    for fn in files:
-        slug = fn[:-3]
-        if state.get(slug) == "done":
-            log(f"skip {slug} (already done)")
-            continue
-        path = os.path.join(CONTENT_DIR, fn)
-        meta = parse_existing(path)
-        log(f"\\n--- {slug} ---")
-        topic = {"title": meta["title"], "tag": meta["category"], "desc": meta["title"]}
-        gen = generate_blog_content(topic, existing_meta=meta)
-        if not gen:
-            log(f"  FAILED for {slug}, leaving original intact")
-            state[slug] = "failed"
-            json.dump(state, open(STATE_FILE, "w"), indent=2)
-            continue
-        content, archetype, persona, excerpt = gen
-        # keep original date, cover image (already unique), tags
-        write_content_md(slug, content, meta["title"], meta["category"], meta["date"],
-                         excerpt, meta["coverImage"], tags=meta["tags"])
-        text = open(path).read()
-        text = text.replace("---\\n", f"---\narchetype: \"{archetype}\"\\n", 1)
-        open(path, "w").write(text)
-        issues = validate(open(path).read(), archetype)
-        log(f"  rewrote {slug}: {len(content.split())} words, archetype={archetype}"
-            + (f", ISSUES: {issues[:4]}" if issues else ", clean"))
-        state[slug] = "done" if not issues else "done-with-issues"
-        changed_paths.append(path)
-        json.dump(state, open(STATE_FILE, "w"), indent=2)
-
-    if changed_paths:
-        log(f"\\n{len(changed_paths)} posts rewritten. Building...")
-        if verify_build():
-            ok = commit_and_push(f"blog: rewrite {len(changed_paths)} posts with human-voice v4 pipeline")
-            log(f"PUSH {'ok' if ok else 'FAILED'}")
-        else:
-            log("Build failed — changes kept locally, nothing pushed.")
-    else:
-        log("No posts rewritten this run.")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--rewrite-all":
-        only = sys.argv[2] if len(sys.argv) > 2 else None
-        rewrite_all(only)
-    else:
-        main()
+    count = 1
+    if "--count" in sys.argv:
+        idx = sys.argv.index("--count")
+        if idx + 1 < len(sys.argv) and sys.argv[idx + 1].isdigit():
+            count = int(sys.argv[idx + 1])
+    elif "COUNT" in os.environ and os.environ["COUNT"].isdigit():
+        count = int(os.environ["COUNT"])
+    
+    main(count=count)

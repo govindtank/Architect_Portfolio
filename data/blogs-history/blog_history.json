@@ -385,6 +385,20 @@
       "tag": "AI-Engineering",
       "wordCount": 1555,
       "status": "published"
+    },
+    "local-llms-on-android-llamacpp-gguf-quantization-for-mobile-edge-ai": {
+      "title": "Local LLMs on Android: Llama.cpp GGUF Quantization for Mobile Edge AI",
+      "date": "September 07, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 809,
+      "status": "published"
+    },
+    "android-npu-acceleration-implementing-onnx-runtime-for-mobile-ml-inference": {
+      "title": "Android NPU Acceleration: Implementing ONNX Runtime for Mobile ML Inference",
+      "date": "September 07, 2026",
+      "tag": "Mobile-AI",
+      "wordCount": 813,
+      "status": "published"
     }
   },
   "images": {
