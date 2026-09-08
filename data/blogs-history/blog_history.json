@@ -413,6 +413,20 @@
       "tag": "Mobile-Architecture",
       "wordCount": 688,
       "status": "published"
+    },
+    "android-live-wallpapers-with-opengl-es-performance-optimization-guide": {
+      "title": "Android Live Wallpapers with OpenGL ES: Performance Optimization Guide",
+      "date": "September 08, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 537,
+      "status": "published"
+    },
+    "agentic-ai-building-autonomous-workflows-with-langgraph-and-mcp-protocol": {
+      "title": "Agentic AI: Building Autonomous Workflows with LangGraph and MCP Protocol",
+      "date": "September 08, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 861,
+      "status": "published"
     }
   },
   "images": {
