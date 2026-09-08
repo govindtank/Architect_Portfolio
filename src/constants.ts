@@ -137,35 +137,52 @@ export const SKILLS: Skill[] = [
 export const PROJECTS: Project[] = [
   {
     title: "BAPS Prakash",
-    description: "Secure media streaming application with AWS CloudFront integration and robust background audio features. Engineering highlights include signed cookie validation and Android Auto sync.",
-    tags: ["Kotlin", "AWS", "ExoPlayer", "Architecture"],
-    image: "/images/projects/baps-prakash.jpg",
+    description: "Secure audio/media streaming application serving 50k+ active users. Engineered with AWS CloudFront signed cookies, background playback via audio_service, ExoPlayer optimizations, and Android Auto integration.",
+    tags: ["Kotlin", "AWS CloudFront", "ExoPlayer", "Android Auto"],
+    image: "/images/projects/baps-prakash-icon.png",
     link: "https://github.com/govindtank",
     playStoreLink: "https://play.google.com/store/apps/details?id=org.baps.swaminarayanprakash&hl=en_IN"
   },
   {
     title: "Akshar Amrutam",
-    description: "High-performance Flutter application with 100k+ downloads and near-perfect stability metrics. Features complex state management, Android Auto integration, and a highly polished UI for a global user base.",
+    description: "High-performance digital publication platform scaled to 100,000+ downloads with a 99.95% crash-free rate. Features BLoC state management, offline cached reading, and an Android Auto companion module.",
     tags: ["Flutter", "Bloc", "Clean Architecture", "Android Auto"],
-    image: "/images/projects/akshar-amrutam.jpg",
+    image: "/images/projects/akshar-amrutam-icon.png",
     link: "https://github.com/govindtank",
     playStoreLink: "https://play.google.com/store/apps/details?id=org.baps.akshar_amrutam&hl=en_IN"
   },
   {
-    title: "Autozon IoT",
-    description: "Real-time IoT monitoring application using MQTT for vehicle hardware communication. Optimizes battery consumption while maintaining persistent hardware-to-cloud connections.",
-    tags: ["Flutter", "MQTT", "IoT", "Hardware"],
-    image: "/images/projects/autozon-iot.jpg",
+    title: "La Crosse View",
+    description: "Real-time environmental monitoring app synchronizing with commercial wireless weather stations. Implements high-reliability Android background synchronization, sensor data parsing, and low-latency dashboard graphs.",
+    tags: ["Android Native", "IoT", "Sensors", "Background Services"],
+    image: "/images/projects/lacrosse-view-icon.png",
     link: "https://github.com/govindtank",
-    playStoreLink: "https://play.google.com/store/apps/details?id=com.voiceofthings.smartindia&hl=en_IN"
+    playStoreLink: "https://play.google.com/store/apps/details?id=com.lacrosseview.app&hl=en_IN"
   },
   {
-    title: "Fastrrr-Floating Apps",
-    description: "Utility application featuring advanced window management and background efficiency. Implements complex overlay window permissions and strict battery efficiency protocols.",
-    tags: ["Android", "Java", "Services"],
-    image: "/images/projects/fastrrr-floating.jpg",
-    link: "https://github.com/govindtank"
+    title: "La Crosse Alerts Mobile",
+    description: "Mission-critical remote temperature & humidity monitoring application. Features customizable threshold push alert triggers, historical device diagnostics, and multi-station telemetry sync.",
+    tags: ["Android Native", "Alerts", "Hardware Sync", "Push Architecture"],
+    image: "/images/projects/lacrosse-alerts-mobile-icon.png",
+    link: "https://github.com/govindtank",
+    playStoreLink: "https://play.google.com/store/apps/details?id=com.lacrossetechnology.lacrossemobile&hl=en_IN"
   },
+  {
+    title: "Max Fun Club",
+    description: "Gamified entertainment and community engagement platform built with Flutter. Engineered with high-frame-rate 60fps micro-interactions, reward tracking, and real-time user state synchronization.",
+    tags: ["Flutter", "Dart", "Entertainment", "State Management"],
+    image: "/images/projects/max-fun-club-icon.png",
+    link: "https://github.com/govindtank",
+    playStoreLink: "https://play.google.com/store/apps/details?id=com.maxfunclub&hl=en_IN"
+  },
+  {
+    title: "Autozon IoT",
+    description: "Real-time automotive IoT monitoring application utilizing MQTT for continuous vehicle hardware communication. Engineered with strict battery efficiency protocols and persistent hardware-to-cloud telemetry.",
+    tags: ["Flutter", "MQTT", "Vehicle Telemetry", "Hardware"],
+    image: "/images/projects/autozon-iot-icon.png",
+    link: "https://github.com/govindtank",
+    playStoreLink: "https://play.google.com/store/apps/details?id=com.voiceofthings.smartindia&hl=en_IN"
+  }
 ];
 
 export const TESTIMONIALS: Testimonial[] = [

@@ -1,0 +1,80 @@
+[
+  {
+    "title": "La Crosse View",
+    "description": "Hardware data synchronization & real-time environmental monitoring app with custom weather station sensor bridges.",
+    "tags": [
+      "Android",
+      "IoT",
+      "Sensors",
+      "Background Services"
+    ],
+    "image": "/images/projects/lacrosse-view-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=com.lacrosseview.app&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  },
+  {
+    "title": "Max Fun Club",
+    "description": "Gamified entertainment and rewards platform engineered with smooth 60fps animations and real-time user state synchronization.",
+    "tags": [
+      "Flutter",
+      "Mobile",
+      "Entertainment",
+      "State Management"
+    ],
+    "image": "/images/projects/max-fun-club-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=com.maxfunclub&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  },
+  {
+    "title": "La Crosse Alerts Mobile",
+    "description": "Mission-critical remote temperature/humidity alert monitoring system with customizable notification triggers and device diagnostics.",
+    "tags": [
+      "Android Native",
+      "Alerts",
+      "Hardware Sync",
+      "Push Architecture"
+    ],
+    "image": "/images/projects/lacrosse-alerts-mobile-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=com.lacrossetechnology.lacrossemobile&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  },
+  {
+    "title": "BAPS Prakash",
+    "description": "Secure audio/media streaming application serving 50k+ users with signed cookies, background playback, and Android Auto support.",
+    "tags": [
+      "Kotlin",
+      "AWS CloudFront",
+      "ExoPlayer",
+      "Audio Service"
+    ],
+    "image": "/images/projects/baps-prakash-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=org.baps.swaminarayanprakash&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  },
+  {
+    "title": "Akshar Amrutam",
+    "description": "High-performance digital publication platform with 100k+ downloads, offline reading cache, and 99.95% crash-free stability.",
+    "tags": [
+      "Flutter",
+      "Bloc",
+      "Clean Architecture",
+      "Android Auto"
+    ],
+    "image": "/images/projects/akshar-amrutam-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=org.baps.akshar_amrutam&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  },
+  {
+    "title": "Autozon IoT",
+    "description": "Real-time automotive IoT monitoring application utilizing MQTT for continuous vehicle hardware communication and battery optimization.",
+    "tags": [
+      "Flutter",
+      "MQTT",
+      "Vehicle Telemetry",
+      "Hardware"
+    ],
+    "image": "/images/projects/autozon-iot-icon.png",
+    "playStoreLink": "https://play.google.com/store/apps/details?id=com.voiceofthings.smartindia&hl=en_IN",
+    "link": "https://github.com/govindtank"
+  }
+]
