@@ -77,3 +77,16 @@ func startStaleCheckTimer() {
     Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
         if Date().timeIntervalSince(self.lastObservationTimestamp) > 3.0 {
             self.restart
+```swift
+func restartTrackingSession() {
+    guard let visionSession = self.visionTrackingSession else { return }
+    visionSession.pause()
+    let config = VNDetectGazeAndDepthRequest()
+    config.preferBackgroundProcessing = true
+    try? visionSession.process([config])
+}
+```
+
+### Privacy Considerations and Future Work
+
+Apple's updated Vision framework on iOS 20 sets a new benchmark for privacy-preserving perceptual computing. Because all depth computation and gaze estimation are executed on the Neural Engine without raw camera buffer exposure, apps can offer rich hands-free interactions while upholding strict data privacy standards.

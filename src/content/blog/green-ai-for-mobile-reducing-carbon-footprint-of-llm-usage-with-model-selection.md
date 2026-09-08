@@ -98,3 +98,18 @@ class GreenModelSelector:
             return min(self.model_scores, key=self.model_scores.get)
         
         if query_complex
+```python
+def route_query(prompt: str, complexity_score: float) -> str:
+    # Route to on-device SLM if query complexity is low
+    if complexity_score < 0.4:
+        return "local_slm_q4"
+    # Route to quantized cloud gateway for moderate tasks
+    elif complexity_score < 0.8:
+        return "cloud_flash_8b"
+    # Reserve large parameter models exclusively for complex reasoning
+    return "cloud_frontier_model"
+```
+
+### Measuring Carbon and Compute Efficiency
+
+Green AI for mobile is fundamentally about disciplined workload triage. By prioritizing on-device small models for the 70% of mundane queries and reserving heavy cloud frontier models for genuine multi-step reasoning, you reduce both cloud compute expenditure and device battery consumption.

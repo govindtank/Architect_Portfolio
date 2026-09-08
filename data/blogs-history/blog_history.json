@@ -1,6 +1,6 @@
 {
   "version": "2.1",
-  "totalCreated": 48,
+  "totalCreated": 96,
   "lastTopic": "Validating Mobile Numbers the Right Way: Introducing country_mobile_validator",
   "todayCount": 49,
   "lastGenerated": "2026-08-06T00:00:00Z",
@@ -8,9 +8,9 @@
     "validating-mobile-numbers-right-way-country-mobile-validator": {
       "title": "Validating Mobile Numbers the Right Way: Introducing country_mobile_validator",
       "slug": "validating-mobile-numbers-right-way-country-mobile-validator",
-      "date": "August 6, 2026",
+      "date": "August 06, 2026",
       "tag": "Flutter",
-      "wordCount": 1200,
+      "wordCount": 812,
       "status": "published"
     },
     "kotlin-multiplatform-evolution-in-2026": {
@@ -18,7 +18,7 @@
       "slug": "kotlin-multiplatform-evolution-in-2026",
       "date": "May 29, 2026",
       "tag": "Kotlin-Multiplatform",
-      "wordCount": 850,
+      "wordCount": 1491,
       "status": "published"
     },
     "ai-powered-code-review-automating-quality-gates-with-llm-agents": {
@@ -26,7 +26,7 @@
       "slug": "ai-powered-code-review-automating-quality-gates-with-llm-agents",
       "date": "May 29, 2026",
       "tag": "AI-Engineering",
-      "wordCount": 1200,
+      "wordCount": 1499,
       "status": "published"
     },
     "ai-model-optimization-quantization-distillation-and-efficient-training-for-edge-devices": {
@@ -46,19 +46,19 @@
       "status": "published"
     },
     "ai-agents-autonomous-workflows-complex-tasks-2026": {
-      "title": "AI Agents: Building Autonomous Workflows for Complex Tasks",
+      "title": "AI Agents in 2026: Building Autonomous Workflows for Complex Tasks",
       "slug": "ai-agents-autonomous-workflows-complex-tasks-2026",
       "date": "May 26, 2026",
       "tag": "AI-Agents",
-      "wordCount": 850,
+      "wordCount": 1517,
       "status": "published"
     },
     "ai-augmented-development-workflows-scaling-code-quality-and-velocity-in-2026": {
       "title": "AI-Augmented Development Workflows: Scaling Code Quality and Velocity in 2026",
       "slug": "ai-augmented-development-workflows-scaling-code-quality-and-velocity-in-2026",
-      "date": "May 21, 2026",
-      "tag": "AI-Engineering",
-      "wordCount": 863,
+      "date": "June 03, 2026",
+      "tag": "AI",
+      "wordCount": 1458,
       "status": "published"
     },
     "clean-architecture-design-patterns-modern-ai-systems-building-maintainable-ml-pipelines": {
@@ -98,7 +98,7 @@
       "slug": "building-scalable-microservices-with-fastapi-and-event-driven-architecture",
       "date": "June 23, 2026",
       "tag": "Backend-Architecture",
-      "wordCount": 1089,
+      "wordCount": 1478,
       "status": "published"
     },
     "zero-trust-architecture-implementing-security-in-distributed-cloud-systems": {
@@ -114,7 +114,7 @@
       "slug": "event-sourcing-and-cqrs-practical-patterns-for-distributed-systems",
       "date": "June 22, 2026",
       "tag": "Architecture",
-      "wordCount": 205,
+      "wordCount": 1521,
       "status": "published"
     },
     "postgresql-18-and-the-rise-of-hybrid-transactional-analytical-processing": {
@@ -122,7 +122,7 @@
       "slug": "postgresql-18-and-the-rise-of-hybrid-transactional-analytical-processing",
       "date": "July 30, 2026",
       "tag": "Databases",
-      "wordCount": 1043,
+      "wordCount": 1481,
       "status": "published"
     },
     "react-server-components-production-patterns-for-high-performance-web-apps": {
@@ -130,15 +130,15 @@
       "slug": "react-server-components-production-patterns-for-high-performance-web-apps",
       "date": "June 16, 2026",
       "tag": "Web-Dev",
-      "wordCount": 953,
+      "wordCount": 1473,
       "status": "published"
     },
     "building-developer-tools-in-2026-from-cli-design-to-ai-assisted-extensions": {
       "title": "Building Developer Tools in 2026: From CLI Design to AI-Assisted Extensions",
       "slug": "building-developer-tools-in-2026-from-cli-design-to-ai-assisted-extensions",
-      "date": "June 18, 2026",
+      "date": "August 20, 2026",
       "tag": "DevTools",
-      "wordCount": 496,
+      "wordCount": 1788,
       "status": "published"
     },
     "edge-ai-running-large-language-models-on-consumer-devices-in-2026": {
@@ -146,7 +146,7 @@
       "slug": "edge-ai-running-large-language-models-on-consumer-devices-in-2026",
       "date": "June 10, 2026",
       "tag": "Edge-AI",
-      "wordCount": 533,
+      "wordCount": 1472,
       "status": "published"
     },
     "data-engineering-at-scale-building-real-time-streaming-pipelines": {
@@ -154,7 +154,7 @@
       "slug": "data-engineering-at-scale-building-real-time-streaming-pipelines",
       "date": "June 19, 2026",
       "tag": "Data-Engineering",
-      "wordCount": 847,
+      "wordCount": 1489,
       "status": "published"
     },
     "platform-engineering-building-internal-developer-portals-that-teams-love": {
@@ -162,7 +162,7 @@
       "slug": "platform-engineering-building-internal-developer-portals-that-teams-love",
       "date": "July 15, 2026",
       "tag": "DevEx",
-      "wordCount": 1428,
+      "wordCount": 1520,
       "status": "published"
     },
     "webassembly-in-2026-from-browser-to-edge-computing-and-beyond": {
@@ -170,7 +170,7 @@
       "slug": "webassembly-in-2026-from-browser-to-edge-computing-and-beyond",
       "date": "June 24, 2026",
       "tag": "WebAssembly",
-      "wordCount": 1088,
+      "wordCount": 1607,
       "status": "published"
     },
     "the-rise-of-ai-coding-assistants-evaluating-code-quality-and-productivity-impact": {
@@ -178,7 +178,7 @@
       "slug": "the-rise-of-ai-coding-assistants-evaluating-code-quality-and-productivity-impact",
       "date": "June 25, 2026",
       "tag": "AI-Engineering",
-      "wordCount": 1214,
+      "wordCount": 1573,
       "status": "published"
     },
     "rust-for-systems-programming-in-2026-memory-safety-concurrency-and-ecosystem-growth": {
@@ -186,7 +186,7 @@
       "slug": "rust-for-systems-programming-in-2026-memory-safety-concurrency-and-ecosystem-growth",
       "date": "June 27, 2026",
       "tag": "Systems",
-      "wordCount": 1052,
+      "wordCount": 1648,
       "status": "published"
     },
     "kubernetes-sidecar-patterns-for-service-mesh-observability-in-2026": {
@@ -194,7 +194,7 @@
       "slug": "kubernetes-sidecar-patterns-for-service-mesh-observability-in-2026",
       "date": "July 31, 2026",
       "tag": "Cloud-Native",
-      "wordCount": 1043,
+      "wordCount": 1464,
       "status": "published"
     },
     "distributed-tracing-with-opentelemetry-from-instrumentation-to-production-debugging": {
@@ -202,7 +202,7 @@
       "slug": "distributed-tracing-with-opentelemetry-from-instrumentation-to-production-debugging",
       "date": "June 29, 2026",
       "tag": "Observability",
-      "wordCount": 1043,
+      "wordCount": 1657,
       "status": "published"
     },
     "testing-ai-generated-code-strategies-for-reliable-machine-learning-pipelines": {
@@ -210,7 +210,7 @@
       "slug": "testing-ai-generated-code-strategies-for-reliable-machine-learning-pipelines",
       "date": "July 21, 2026",
       "tag": "AI-ML",
-      "wordCount": 1278,
+      "wordCount": 1592,
       "status": "published"
     },
     "finops-for-kubernetes-optimizing-cloud-costs-in-containerized-environments": {
@@ -218,7 +218,7 @@
       "slug": "finops-for-kubernetes-optimizing-cloud-costs-in-containerized-environments",
       "date": "July 01, 2026",
       "tag": "DevOps",
-      "wordCount": 1043,
+      "wordCount": 1776,
       "status": "published"
     },
     "css-container-queries-and-style-queries-responsive-design-beyond-media-queries": {
@@ -226,7 +226,7 @@
       "slug": "css-container-queries-and-style-queries-responsive-design-beyond-media-queries",
       "date": "July 02, 2026",
       "tag": "Web-Dev",
-      "wordCount": 1223,
+      "wordCount": 1470,
       "status": "published"
     },
     "building-real-time-collaborative-apps-with-crdts-and-operational-transformation": {
@@ -234,7 +234,7 @@
       "slug": "building-real-time-collaborative-apps-with-crdts-and-operational-transformation",
       "date": "July 03, 2026",
       "tag": "Architecture",
-      "wordCount": 829,
+      "wordCount": 1486,
       "status": "published"
     },
     "top-free-developer-tools-and-ai-resources-transforming-engineering-workflows-in-2026": {
@@ -242,7 +242,7 @@
       "slug": "top-free-developer-tools-and-ai-resources-transforming-engineering-workflows-in-2026",
       "date": "July 17, 2026",
       "tag": "DevTools",
-      "wordCount": 1288,
+      "wordCount": 1683,
       "status": "published"
     },
     "flutter-impeller-rendering-engine-gpu-acceleration-2026": {
@@ -250,7 +250,7 @@
       "slug": "flutter-impeller-rendering-engine-gpu-acceleration-2026",
       "date": "July 18, 2026",
       "tag": "Flutter",
-      "wordCount": 1670,
+      "wordCount": 1526,
       "status": "published"
     },
     "kotlin-multiplatform-in-production-sharing-business-logic-across-android-ios-and-web-in-2026": {
@@ -258,7 +258,7 @@
       "slug": "kotlin-multiplatform-in-production-sharing-business-logic-across-android-ios-and-web-in-2026",
       "date": "July 20, 2026",
       "tag": "Kotlin-Multiplatform",
-      "wordCount": 1215,
+      "wordCount": 1525,
       "status": "published"
     },
     "flutter-widget-testing-mastery-from-unit-tests-to-integration-goldens": {
@@ -266,7 +266,7 @@
       "slug": "flutter-widget-testing-mastery-from-unit-tests-to-integration-goldens",
       "date": "July 21, 2026",
       "tag": "Flutter",
-      "wordCount": 1046,
+      "wordCount": 1620,
       "status": "published"
     },
     "ios-20-and-swift-8-what-mobile-developers-need-to-know": {
@@ -274,7 +274,7 @@
       "slug": "ios-20-and-swift-8-what-mobile-developers-need-to-know",
       "date": "July 22, 2026",
       "tag": "Mobile",
-      "wordCount": 1049,
+      "wordCount": 1461,
       "status": "published"
     },
     "typescript-5x-advanced-patterns-conditional-types-template-literals-and-mapped-types-in-production": {
@@ -282,7 +282,7 @@
       "slug": "typescript-5x-advanced-patterns-conditional-types-template-literals-and-mapped-types-in-production",
       "date": "July 29, 2026",
       "tag": "Web-Dev",
-      "wordCount": 1055,
+      "wordCount": 1491,
       "status": "published"
     },
     "webgpu-next-generation-graphics-and-compute-for-the-browser": {
@@ -290,15 +290,15 @@
       "slug": "webgpu-next-generation-graphics-and-compute-for-the-browser",
       "date": "July 29, 2026",
       "tag": "Web-Dev",
-      "wordCount": 1040,
+      "wordCount": 1465,
       "status": "published"
     },
     "free-developer-tools-that-supercharge-your-2026-workflow": {
-      "title": "Free Developer Tools That Supercharge Your 2026 Workflow",
+      "title": "Free Developer Tools That Upgrade Your 2026 Workflow",
       "slug": "free-developer-tools-that-supercharge-your-2026-workflow",
       "date": "August 01, 2026",
       "tag": "DevTools",
-      "wordCount": 1126,
+      "wordCount": 1418,
       "status": "published"
     },
     "dart-4-and-the-evolution-of-the-flutter-ecosystem-whats-new-in-2026": {
@@ -306,7 +306,7 @@
       "slug": "dart-4-and-the-evolution-of-the-flutter-ecosystem-whats-new-in-2026",
       "date": "August 02, 2026",
       "tag": "Flutter",
-      "wordCount": 1055,
+      "wordCount": 1425,
       "status": "published"
     },
     "flutter-4-and-impeller-the-next-generation-of-cross-platform-ui-performance": {
@@ -314,7 +314,7 @@
       "slug": "flutter-4-and-impeller-the-next-generation-of-cross-platform-ui-performance",
       "date": "August 03, 2026",
       "tag": "Flutter",
-      "wordCount": 1259,
+      "wordCount": 1584,
       "status": "published"
     },
     "agentic-ai-systems-designing-reliable-multi-agent-workflows-in-2026": {
@@ -322,7 +322,7 @@
       "slug": "agentic-ai-systems-designing-reliable-multi-agent-workflows-in-2026",
       "date": "August 04, 2026",
       "tag": "Agentic-AI",
-      "wordCount": 1043,
+      "wordCount": 1483,
       "status": "published"
     },
     "small-language-models-running-efficient-ai-on-edge-devices-and-mobile-phones": {
@@ -330,7 +330,7 @@
       "slug": "small-language-models-running-efficient-ai-on-edge-devices-and-mobile-phones",
       "date": "August 05, 2026",
       "tag": "Edge-AI",
-      "wordCount": 1052,
+      "wordCount": 1486,
       "status": "published"
     },
     "ai-observability-monitoring-tracing-and-debugging-llm-applications-in-production": {
@@ -338,7 +338,7 @@
       "slug": "ai-observability-monitoring-tracing-and-debugging-llm-applications-in-production",
       "date": "August 05, 2026",
       "tag": "AI-Observability",
-      "wordCount": 1847,
+      "wordCount": 1455,
       "status": "published"
     },
     "antigravity-vs-claude-code-vs-codex-choosing-an-ai-coding-agent-in-2026": {
@@ -354,7 +354,7 @@
       "slug": "firebase-generative-ai-sdk-mobile-multimodal-model-serving-android-ios",
       "date": "August 05, 2026",
       "tag": "Mobile-AI",
-      "wordCount": 1721,
+      "wordCount": 1629,
       "status": "published"
     },
     "mcp-stateless-mode-building-ai-agent-servers-without-session-state": {
@@ -367,27 +367,31 @@
     },
     "mcp-in-practice-model-context-protocol-for-real-world-developer-tools": {
       "title": "MCP in Practice: Model Context Protocol for Real-World Developer Tools",
+      "slug": "mcp-in-practice-model-context-protocol-for-real-world-developer-tools",
       "date": "August 12, 2026",
       "tag": "AI-Engineering",
-      "wordCount": 2509,
+      "wordCount": 2571,
       "status": "published"
     },
     "kotlin-2x-and-the-k2-compiler-what-it-unlocked-for-android-developers": {
       "title": "Kotlin 2.x and the K2 Compiler: What It Unlocked for Android Developers",
+      "slug": "kotlin-2x-and-the-k2-compiler-what-it-unlocked-for-android-developers",
       "date": "August 12, 2026",
       "tag": "Kotlin",
-      "wordCount": 1936,
+      "wordCount": 1999,
       "status": "published"
     },
     "agentic-ai-development-from-chat-assistants-to-autonomous-coding-agents": {
       "title": "Agentic AI Development: From Chat Assistants to Autonomous Coding Agents",
+      "slug": "agentic-ai-development-from-chat-assistants-to-autonomous-coding-agents",
       "date": "August 13, 2026",
       "tag": "AI-Engineering",
-      "wordCount": 1555,
+      "wordCount": 1581,
       "status": "published"
     },
     "local-llms-on-android-llamacpp-gguf-quantization-for-mobile-edge-ai": {
       "title": "Local LLMs on Android: Llama.cpp GGUF Quantization for Mobile Edge AI",
+      "slug": "local-llms-on-android-llamacpp-gguf-quantization-for-mobile-edge-ai",
       "date": "September 07, 2026",
       "tag": "Mobile-Architecture",
       "wordCount": 809,
@@ -395,6 +399,7 @@
     },
     "android-npu-acceleration-implementing-onnx-runtime-for-mobile-ml-inference": {
       "title": "Android NPU Acceleration: Implementing ONNX Runtime for Mobile ML Inference",
+      "slug": "android-npu-acceleration-implementing-onnx-runtime-for-mobile-ml-inference",
       "date": "September 07, 2026",
       "tag": "Mobile-AI",
       "wordCount": 813,
@@ -402,6 +407,7 @@
     },
     "jetpack-compose-multiplatform-sharing-business-logic-between-ios-and-android": {
       "title": "Jetpack Compose Multiplatform: Sharing Business Logic Between iOS and Android",
+      "slug": "jetpack-compose-multiplatform-sharing-business-logic-between-ios-and-android",
       "date": "September 07, 2026",
       "tag": "Mobile-Architecture",
       "wordCount": 944,
@@ -409,6 +415,7 @@
     },
     "android-npu-acceleration-implementing-onnx-runtime-for-ml-inference": {
       "title": "Android NPU Acceleration: Implementing ONNX Runtime for ML Inference",
+      "slug": "android-npu-acceleration-implementing-onnx-runtime-for-ml-inference",
       "date": "September 07, 2026",
       "tag": "Mobile-Architecture",
       "wordCount": 688,
@@ -416,6 +423,7 @@
     },
     "android-live-wallpapers-with-opengl-es-performance-optimization-guide": {
       "title": "Android Live Wallpapers with OpenGL ES: Performance Optimization Guide",
+      "slug": "android-live-wallpapers-with-opengl-es-performance-optimization-guide",
       "date": "September 08, 2026",
       "tag": "Mobile-Architecture",
       "wordCount": 537,
@@ -423,9 +431,346 @@
     },
     "agentic-ai-building-autonomous-workflows-with-langgraph-and-mcp-protocol": {
       "title": "Agentic AI: Building Autonomous Workflows with LangGraph and MCP Protocol",
+      "slug": "agentic-ai-building-autonomous-workflows-with-langgraph-and-mcp-protocol",
       "date": "September 08, 2026",
       "tag": "AI-Engineering",
       "wordCount": 861,
+      "status": "published"
+    },
+    "ai-augmented-development-workflows-architecting-the-future-of-software-engineering": {
+      "title": "AI-Augmented Development Workflows: Architecting the Future of Software Engineering",
+      "slug": "ai-augmented-development-workflows-architecting-the-future-of-software-engineering",
+      "date": "June 02, 2026",
+      "tag": "AI",
+      "wordCount": 1476,
+      "status": "published"
+    },
+    "deepseek-v4-flash-what-the-new-open-model-means-for-developers": {
+      "title": "DeepSeek V4 Flash: What the New Open Model Means for Developers",
+      "slug": "deepseek-v4-flash-what-the-new-open-model-means-for-developers",
+      "date": "August 08, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 1768,
+      "status": "published"
+    },
+    "ai-powered-test-generation-for-flutterandroid-ui-coverage-edge-cases-flaky-test-detection": {
+      "title": "AI-Powered Test Generation for Flutter/Android: UI Coverage, Edge Cases, Flaky Test Detection",
+      "slug": "ai-powered-test-generation-for-flutterandroid-ui-coverage-edge-cases-flaky-test-detection",
+      "date": "August 31, 2026",
+      "tag": "Testing",
+      "wordCount": 696,
+      "status": "published"
+    },
+    "on-device-ai-with-npus-running-models-on-phone-silicon-in-2026": {
+      "title": "On-Device AI with NPUs: Running Models on Phone Silicon in 2026",
+      "slug": "on-device-ai-with-npus-running-models-on-phone-silicon-in-2026",
+      "date": "August 16, 2026",
+      "tag": "Mobile-AI",
+      "wordCount": 758,
+      "status": "published"
+    },
+    "rag-in-production-practical-retrieval-patterns-beyond-the-demo": {
+      "title": "RAG in Production: Practical Retrieval Patterns Beyond the Demo",
+      "slug": "rag-in-production-practical-retrieval-patterns-beyond-the-demo",
+      "date": "August 18, 2026",
+      "tag": "AI-ML",
+      "wordCount": 1033,
+      "status": "published"
+    },
+    "ai-native-ides-for-mobile-development-flutter-ai-features-android-studio-integration": {
+      "title": "AI-Native IDEs for Mobile Development: Flutter AI Features, Android Studio Integration",
+      "slug": "ai-native-ides-for-mobile-development-flutter-ai-features-android-studio-integration",
+      "date": "August 31, 2026",
+      "tag": "DevTools",
+      "wordCount": 513,
+      "status": "published"
+    },
+    "ethical-ai-in-mobile-apps-bias-detection-explainable-ai-gdpr-compliance-patterns": {
+      "title": "Ethical AI in Mobile Apps: Bias Detection, Explainable AI, GDPR Compliance Patterns",
+      "slug": "ethical-ai-in-mobile-apps-bias-detection-explainable-ai-gdpr-compliance-patterns",
+      "date": "August 31, 2026",
+      "tag": "AI-Ethics",
+      "wordCount": 751,
+      "status": "published"
+    },
+    "compose-multiplatform-for-ios-is-shared-ui-production-ready-in-2026": {
+      "title": "Compose Multiplatform for iOS: Is Shared UI Production-Ready in 2026",
+      "slug": "compose-multiplatform-for-ios-is-shared-ui-production-ready-in-2026",
+      "date": "August 14, 2026",
+      "tag": "Kotlin",
+      "wordCount": 656,
+      "status": "published"
+    },
+    "green-ai-for-mobile-reducing-carbon-footprint-of-llm-usage-with-model-selection": {
+      "title": "Green AI for Mobile: Reducing Carbon Footprint of LLM Usage with Model Selection",
+      "slug": "green-ai-for-mobile-reducing-carbon-footprint-of-llm-usage-with-model-selection",
+      "date": "August 30, 2026",
+      "tag": "Sustainability",
+      "wordCount": 510,
+      "status": "published"
+    },
+    "hybrid-native-web-apps-platform-specific-features-vs-pwareact-native-trade-offs-in-2026": {
+      "title": "Hybrid Native-Web Apps: Platform-Specific Features vs PWA/React Native Trade-offs in 2026",
+      "slug": "hybrid-native-web-apps-platform-specific-features-vs-pwareact-native-trade-offs-in-2026",
+      "date": "August 30, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 628,
+      "status": "published"
+    },
+    "docker-for-mobile-developers-streamlining-android-and-flutter-build-pipelines": {
+      "title": "Docker for Mobile Developers: Streamlining Android and Flutter Build Pipelines",
+      "slug": "docker-for-mobile-developers-streamlining-android-and-flutter-build-pipelines",
+      "date": "August 23, 2026",
+      "tag": "DevOps",
+      "wordCount": 1566,
+      "status": "published"
+    },
+    "ai-agents-in-production-from-prototypes-to-reliable-autonomous-systems": {
+      "title": "AI Agents in Production: From Prototypes to Reliable Autonomous Systems",
+      "slug": "ai-agents-in-production-from-prototypes-to-reliable-autonomous-systems",
+      "date": "August 29, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 531,
+      "status": "published"
+    },
+    "cross-platform-mobile-in-2026-flutter-vs-react-native-vs-kotlin-multiplatform-vs-tauri": {
+      "title": "Cross-Platform Mobile in 2026: Flutter vs React Native vs Kotlin Multiplatform vs Tauri",
+      "slug": "cross-platform-mobile-in-2026-flutter-vs-react-native-vs-kotlin-multiplatform-vs-tauri",
+      "date": "September 01, 2026",
+      "tag": "Mobile-Dev",
+      "wordCount": 671,
+      "status": "published"
+    },
+    "ios-20-vision-framework-updates-eye-tracking-depth-sensing-privacy-preserving-features": {
+      "title": "iOS 20 Vision Framework Updates: Eye Tracking, Depth Sensing, Privacy-Preserving Features",
+      "slug": "ios-20-vision-framework-updates-eye-tracking-depth-sensing-privacy-preserving-features",
+      "date": "August 30, 2026",
+      "tag": "iOS",
+      "wordCount": 533,
+      "status": "published"
+    },
+    "flutter-beyond-mobile-desktop-web-and-embedded-targets-in-2026": {
+      "title": "Flutter Beyond Mobile: Desktop, Web, and Embedded Targets in 2026",
+      "slug": "flutter-beyond-mobile-desktop-web-and-embedded-targets-in-2026",
+      "date": "August 13, 2026",
+      "tag": "Flutter",
+      "wordCount": 1231,
+      "status": "published"
+    },
+    "intellij-idea-goes-lsp-kotlin-and-java-intelligence-in-vs-code": {
+      "title": "IntelliJ IDEA Goes LSP: Kotlin and Java Intelligence in VS Code",
+      "slug": "intellij-idea-goes-lsp-kotlin-and-java-intelligence-in-vs-code",
+      "date": "August 10, 2026",
+      "tag": "DevTools",
+      "wordCount": 2190,
+      "status": "published"
+    },
+    "claude-code-auto-mode-is-now-the-default-should-you-trust-it": {
+      "title": "Claude Code Auto Mode Is Now the Default: Should You Trust It?",
+      "slug": "claude-code-auto-mode-is-now-the-default-should-you-trust-it",
+      "date": "August 09, 2026",
+      "tag": "AI-Coding-Agents",
+      "wordCount": 1496,
+      "status": "published"
+    },
+    "mobile-app-store-ai-review-guidelines-navigating-applegoogle-policy-changes-in-2026": {
+      "title": "Mobile App Store AI Review Guidelines: Navigating Apple/Google Policy Changes in 2026",
+      "slug": "mobile-app-store-ai-review-guidelines-navigating-applegoogle-policy-changes-in-2026",
+      "date": "August 30, 2026",
+      "tag": "Business",
+      "wordCount": 600,
+      "status": "published"
+    },
+    "ai-monetization-in-mobile-pricing-strategies-freemium-llm-tiers-usage-based-billing-challenges": {
+      "title": "AI Monetization in Mobile: Pricing Strategies, Freemium LLM Tiers, Usage-Based Billing Challenges",
+      "slug": "ai-monetization-in-mobile-pricing-strategies-freemium-llm-tiers-usage-based-billing-challenges",
+      "date": "August 31, 2026",
+      "tag": "Business",
+      "wordCount": 680,
+      "status": "published"
+    },
+    "android-jetpack-ai-ml-kit-integration-neural-networks-api-updates-edge-tpu-support-in-2026": {
+      "title": "Android Jetpack AI: ML Kit Integration, Neural Networks API Updates, Edge TPU Support in 2026",
+      "slug": "android-jetpack-ai-ml-kit-integration-neural-networks-api-updates-edge-tpu-support-in-2026",
+      "date": "August 30, 2026",
+      "tag": "Android",
+      "wordCount": 630,
+      "status": "published"
+    },
+    "effective-typescript-57-inference-const-generics-and-template-literal-types": {
+      "title": "Effective TypeScript 5.7: Inference, Const Generics, and Template Literal Types",
+      "slug": "effective-typescript-57-inference-const-generics-and-template-literal-types",
+      "date": "September 02, 2026",
+      "tag": "Web-Dev",
+      "wordCount": 636,
+      "status": "published"
+    },
+    "local-first-applications-sync-engines-crdts-and-offline-first-ux": {
+      "title": "Local-First Applications: Sync Engines, CRDTs, and Offline-First UX",
+      "slug": "local-first-applications-sync-engines-crdts-and-offline-first-ux",
+      "date": "August 17, 2026",
+      "tag": "Architecture",
+      "wordCount": 1377,
+      "status": "published"
+    },
+    "server-driven-ui-in-mobile-apps-dynamic-experiences-without-app-store-updates": {
+      "title": "Server-Driven UI in Mobile Apps: Dynamic Experiences Without App Store Updates",
+      "slug": "server-driven-ui-in-mobile-apps-dynamic-experiences-without-app-store-updates",
+      "date": "August 21, 2026",
+      "tag": "Mobile",
+      "wordCount": 1395,
+      "status": "published"
+    },
+    "flutter-state-management-deep-dive-bloc-vs-riverpod-vs-provider-in-2026": {
+      "title": "Flutter State Management Deep Dive: Bloc vs Riverpod vs Provider in 2026",
+      "slug": "flutter-state-management-deep-dive-bloc-vs-riverpod-vs-provider-in-2026",
+      "date": "May 28, 2026",
+      "tag": "Flutter",
+      "wordCount": 1501,
+      "status": "published"
+    },
+    "ai-driven-accessibility-automatic-ui-adaptation-for-disabilities-with-screen-reader-optimization": {
+      "title": "AI-Driven Accessibility: Automatic UI Adaptation for Disabilities with Screen Reader Optimization",
+      "slug": "ai-driven-accessibility-automatic-ui-adaptation-for-disabilities-with-screen-reader-optimization",
+      "date": "August 31, 2026",
+      "tag": "Accessibility",
+      "wordCount": 729,
+      "status": "published"
+    },
+    "ai-native-mobile-games-generative-narrative-real-time-opponent-adaptation-procedural-content": {
+      "title": "AI-Native Mobile Games: Generative Narrative, Real-Time Opponent Adaptation, Procedural Content",
+      "slug": "ai-native-mobile-games-generative-narrative-real-time-opponent-adaptation-procedural-content",
+      "date": "August 30, 2026",
+      "tag": "Mobile-Games",
+      "wordCount": 774,
+      "status": "published"
+    },
+    "llm-centric-app-design-token-aware-ui-context-window-management-cost-modeling": {
+      "title": "LLM-Centric App Design: Token-Aware UI, Context Window Management, Cost Modeling",
+      "slug": "llm-centric-app-design-token-aware-ui-context-window-management-cost-modeling",
+      "date": "August 31, 2026",
+      "tag": "AI-Native-Apps",
+      "wordCount": 629,
+      "status": "published"
+    },
+    "cross-lingual-mobile-development-low-resource-languages-cultural-ui-adaptation-rtl-layouts": {
+      "title": "Cross-Lingual Mobile Development: Low-Resource Languages, Cultural UI Adaptation, RTL Layouts",
+      "slug": "cross-lingual-mobile-development-low-resource-languages-cultural-ui-adaptation-rtl-layouts",
+      "date": "August 31, 2026",
+      "tag": "Mobile-Architecture",
+      "wordCount": 578,
+      "status": "published"
+    },
+    "javascript-runtime-wars-2026-nodejs-bun-deno-compared": {
+      "title": "The JavaScript Runtime Wars in 2026: Node.js, Bun, and Deno Compared",
+      "slug": "javascript-runtime-wars-2026-nodejs-bun-deno-compared",
+      "date": "August 20, 2026",
+      "tag": "Web-Dev",
+      "wordCount": 1214,
+      "status": "published"
+    },
+    "flutter-webgpu-rendering-gpu-acceleration-shader-programming-webgl-fallbacks": {
+      "title": "Flutter WebGPU Rendering: GPU Acceleration, Shader Programming, WebGL Fallbacks",
+      "slug": "flutter-webgpu-rendering-gpu-acceleration-shader-programming-webgl-fallbacks",
+      "date": "August 30, 2026",
+      "tag": "Flutter",
+      "wordCount": 638,
+      "status": "published"
+    },
+    "android-17-and-the-modern-android-stack-what-changed-in-2026": {
+      "title": "Android 17 and the Modern Android Stack: What Changed in 2026",
+      "slug": "android-17-and-the-modern-android-stack-what-changed-in-2026",
+      "date": "August 13, 2026",
+      "tag": "Android",
+      "wordCount": 560,
+      "status": "published"
+    },
+    "kotlin-multiplatform-at-scale-production-architecture-patterns-for-shared-business-logic": {
+      "title": "Kotlin Multiplatform at Scale: Production Architecture Patterns for Shared Business Logic",
+      "slug": "kotlin-multiplatform-at-scale-production-architecture-patterns-for-shared-business-logic",
+      "date": "July 16, 2026",
+      "tag": "Kotlin-Multiplatform",
+      "wordCount": 1730,
+      "status": "published"
+    },
+    "prompt-engineering-for-production-getting-reliable-output-from-llm-apis": {
+      "title": "Prompt Engineering for Production: Getting Reliable Output from LLM APIs",
+      "slug": "prompt-engineering-for-production-getting-reliable-output-from-llm-apis",
+      "date": "August 24, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 1324,
+      "status": "published"
+    },
+    "local-first-sync-engines-electricsql-powersync-and-the-offline-first-renaissance": {
+      "title": "Local-First Sync Engines: ElectricSQL, PowerSync, and the Offline-First Renaissance",
+      "slug": "local-first-sync-engines-electricsql-powersync-and-the-offline-first-renaissance",
+      "date": "August 29, 2026",
+      "tag": "Architecture",
+      "wordCount": 697,
+      "status": "published"
+    },
+    "swiftui-vs-jetpack-compose-the-native-ui-framework-showdown-in-2026": {
+      "title": "SwiftUI vs Jetpack Compose: The Native UI Framework Showdown in 2026",
+      "slug": "swiftui-vs-jetpack-compose-the-native-ui-framework-showdown-in-2026",
+      "date": "August 22, 2026",
+      "tag": "Mobile",
+      "wordCount": 999,
+      "status": "published"
+    },
+    "ai-performance-budgets-managing-llm-latency-cost-vs-ux-expectations-with-caching": {
+      "title": "AI Performance Budgets: Managing LLM Latency + Cost vs UX Expectations with Caching",
+      "slug": "ai-performance-budgets-managing-llm-latency-cost-vs-ux-expectations-with-caching",
+      "date": "August 30, 2026",
+      "tag": "Performance",
+      "wordCount": 753,
+      "status": "published"
+    },
+    "prompt-engineering-for-mobile-apis-device-capabilities-storage-awareness-network-conditions": {
+      "title": "Prompt Engineering for Mobile APIs: Device Capabilities, Storage Awareness, Network Conditions",
+      "slug": "prompt-engineering-for-mobile-apis-device-capabilities-storage-awareness-network-conditions",
+      "date": "August 30, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 735,
+      "status": "published"
+    },
+    "the-future-of-webassembly-beyond-the-browser-into-cloud-and-edge": {
+      "title": "The Future of WebAssembly: Beyond the Browser into Cloud and Edge",
+      "slug": "the-future-of-webassembly-beyond-the-browser-into-cloud-and-edge",
+      "date": "August 26, 2026",
+      "tag": "WebAssembly",
+      "wordCount": 705,
+      "status": "published"
+    },
+    "comfyui-workflows-for-blog-cover-art-stable-diffusion-controlnet-and-consistent-characters": {
+      "title": "ComfyUI Workflows for Blog Cover Art: Stable Diffusion, ControlNet, and Consistent Characters",
+      "slug": "comfyui-workflows-for-blog-cover-art-stable-diffusion-controlnet-and-consistent-characters",
+      "date": "September 03, 2026",
+      "tag": "AI-ML",
+      "wordCount": 568,
+      "status": "published"
+    },
+    "ai-native-app-architecture-designing-applications-around-llm-calls": {
+      "title": "AI-Native App Architecture: Designing Applications Around LLM Calls",
+      "slug": "ai-native-app-architecture-designing-applications-around-llm-calls",
+      "date": "August 15, 2026",
+      "tag": "AI-Engineering",
+      "wordCount": 1718,
+      "status": "published"
+    },
+    "cross-platform-arvr-development-unity-vs-react-native-visionos-with-6dof-tracking": {
+      "title": "Cross-Platform AR/VR Development: Unity vs React Native + visionOS with 6DoF Tracking",
+      "slug": "cross-platform-arvr-development-unity-vs-react-native-visionos-with-6dof-tracking",
+      "date": "August 30, 2026",
+      "tag": "AR-VR",
+      "wordCount": 556,
+      "status": "published"
+    },
+    "agentic-workflows-on-device-local-multi-agent-systems-for-privacy-first-mobile-ai": {
+      "title": "Agentic Workflows on Device: Local Multi-Agent Systems for Privacy-First Mobile AI",
+      "slug": "agentic-workflows-on-device-local-multi-agent-systems-for-privacy-first-mobile-ai",
+      "date": "August 30, 2026",
+      "tag": "Mobile-AI",
+      "wordCount": 765,
       "status": "published"
     }
   },

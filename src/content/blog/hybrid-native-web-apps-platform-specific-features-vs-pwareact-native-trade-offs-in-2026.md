@@ -115,3 +115,17 @@ describe('Bluetooth handoff', () => {
 ## Recap: what we built
 
 We created a feature detection layer that routes to either a native or web implementation
+We built a feature detection layer that routes to either a native or web implementation based on hardware availability:
+
+```typescript
+export function getBiometricHandler(): BiometricProvider {
+  if (window.Capacitor?.isNativePlatform()) {
+    return new NativeBiometricAuth();
+  }
+  return new WebAuthnProvider();
+}
+```
+
+### Architectural Verdict
+
+Hybrid architectures succeed when you establish strict boundaries between web rendering and native system capabilities. Use web views for high-churn content screens, but enforce native bridges for background sync, push notifications, and cryptographic hardware operations.

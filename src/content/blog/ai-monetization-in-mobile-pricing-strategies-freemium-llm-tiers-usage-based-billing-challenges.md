@@ -57,3 +57,11 @@ And if your unit economics are so tight that free users are genuinely unprofitab
 ## What this means for your roadmap
 
 Before you build a metering system, try a hard-capped free tier and a flat-rate paid tier for 90 days. Measure conversion, retention, and support ticket volume. If the data tells you usage-based pricing would meaningfully improve margins, you'll at least know exactly what you're optimizing for. Most teams I've talked to never get to that point because the simple
+Most teams I've talked to never get to that point because the simple hybrid credit pack model delivers the best unit economics without surprising users with billing cliffs.
+
+### Strategic Summary
+
+Sustainable mobile AI monetization requires matching your billing mechanics to your underlying compute expenses:
+1. **Gate high-token tasks** behind clear credit allocations or premium subscription tiers.
+2. **Run free-tier features locally** using on-device quantized models to eliminate variable API costs for casual users.
+3. **Cache repeated generation queries** aggressively on edge proxies to preserve margins.

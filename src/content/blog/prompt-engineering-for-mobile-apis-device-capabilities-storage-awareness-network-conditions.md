@@ -93,3 +93,13 @@ If your prompt engineering is good enough, you can often offload the heavy lifti
 | Real network measurement | Adaptive streaming/sync | Medium | Worth it |
 | Structured device context blocks | LLM-driven decisions | Low | Worth it |
 | On-device models | Offline
+| Architecture Layer | High-End Flagship (WiFi) | Low-End Device (Cellular) |
+|--------------------|--------------------------|---------------------------|
+| Model Selection | Frontier Cloud LLM / Multi-modal | On-device SLM (GGUF Q4) |
+| Context Window | Full conversation history | Compressed semantic summary |
+| Streaming Protocol | HTTP/2 SSE streaming | Single-turn payload batch |
+| Fallback Strategy | Retries with exponential backoff | Cached offline responses |
+
+### Practical Summary
+
+Mobile prompt engineering requires system-aware adaptability. When prompts dynamically adjust their context depth and payload size to current battery, connectivity, and hardware constraints, apps deliver consistent AI responsiveness under real-world conditions.

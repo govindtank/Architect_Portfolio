@@ -66,3 +66,13 @@ Tauri wraps a web frontend in a lightweight native shell. Version 2.0 brought th
 | Native access | Via plugins | Via modules | Direct | Limited |
 | Bundle size | Larger | Medium | Smaller | Smallest |
 | Team ramp-up | Dart learning curve | Low for JS devs |
+| Ecosystem Dimension | Flutter (Impeller) | React Native (New Arch) | Kotlin Multiplatform | Tauri Mobile |
+|---------------------|--------------------|-------------------------|----------------------|--------------|
+| UI Rendering Engine | Custom Skia/Impeller | Native Host Views | Native Platform UI / Compose | System WebView |
+| Performance / 120fps| Near-instant, stable | High with TurboModules | Native-speed bytecode | Dependent on WebView |
+| Shared Logic Volume | 95%+ UI & Logic | 85%+ UI & Logic | 60-80% Business Logic | 70% Web / Rust Core |
+| Team ramp-up | Dart learning curve | Low for JS/React devs | Kotlin proficiency | Rust + Web stack |
+
+### Recommendation
+
+For apps prioritizing unified custom UI designs and high-frame-rate rendering, Flutter remains unmatched. If your team has deep native platform specializations or existing Swift/Kotlin codebases, Kotlin Multiplatform offers the cleanest architectural separation without sacrificing native UI fidelity.

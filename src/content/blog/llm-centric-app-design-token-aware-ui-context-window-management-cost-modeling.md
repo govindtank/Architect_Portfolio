@@ -99,3 +99,8 @@ def check_token_quota():
 ## The real lesson
 
 LLM calls aren't
+The key realization is that LLM calls aren't traditional REST APIs with fixed payloads; they are dynamic computational streams with variable financial and latency footprints.
+
+### Architecture Blueprint
+
+Design your client-side UI to be token-aware: display optimistic loading states, enforce client-side token budgets before dispatch, and dynamically compress conversational history. This ensures responsive performance and predictable unit economics across mobile user bases.

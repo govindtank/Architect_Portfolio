@@ -133,3 +133,10 @@ The ARB files hold translated strings. The generated delegate exposes them with 
 **Custom painters ignored text direction.** I had a progress indicator with text labels that stayed left-aligned even in RTL mode. Wrapping in `Directionality` or using `TextDirection` explicitly fixed it.
 
 **Pluralization rules differ wildly.** English has two forms
+**Pluralization rules differ wildly across low-resource languages.** English has two forms (one and other), whereas languages like Arabic or Slavic dialects have complex multi-form grammatical categories.
+
+### Key Takeaways
+
+1. Use standard ICU message formats rather than simple string interpolation.
+2. Mirror full directional layouts dynamically for RTL locales.
+3. Test typography and line heights on physical target devices to prevent clipping on non-Latin scripts.

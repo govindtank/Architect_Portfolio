@@ -96,3 +96,10 @@ What we built is a minimal, battery-friendly local LLM pipeline: the llama.cpp b
 1. **OOM on model load**: I initially used a 4096-token context window, which pushed memory usage to 6.2GB. Dropping to 2048 tokens (sufficient for most chat use cases) fixed this without hurting output quality.
 2. **Model loading failures**: I first tried loading the GGUF file directly from APK assets, which fails because llama.cpp can’t read compressed APK assets. You have to copy the model from assets to your app’s internal files directory on first launch.
 3. **UI freezes on inference**: I forgot to wrap model loading and generation in `Dispatchers.IO` coroutines at first, which froze the UI for
+I made the mistake of running both prompt processing and generation in `Dispatchers.IO` coroutines at first, which froze the UI for 400ms during KV cache allocation. 
+
+The fix was routing GGUF context initialization to a dedicated background priority thread with `Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND)` and binding memory buffers directly through direct native byte arrays.
+
+### Takeaway
+
+On-device inference with llama.cpp on modern Android devices is completely viable for 1B–3B parameter models when paired with Q4_K_M or Q5_K_M quantization. Profile memory pressure early, isolate native runtime threads from UI dispatchers, and monitor thermal throttling to keep user experiences fast and battery-friendly.

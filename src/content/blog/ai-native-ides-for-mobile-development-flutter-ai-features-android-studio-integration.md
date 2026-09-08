@@ -79,3 +79,11 @@ The kicker: the LLM never sees your full file. It sees whatever fit in the retri
 ## Where mobile-specific indexing breaks
 
 I ran into three specific problems with Flutter
+### Lessons learned from production integration
+
+I ran into three specific problems with Flutter AI integration in IDE workflows:
+1. **Context window bloat**: Dumping entire widget trees into completion prompts degraded model accuracy. Pruning AST context to relevant state scopes fixed response relevancy.
+2. **Latency spikes during code completions**: Local SLM inference on developer laptops can throttle background builds. We offloaded multi-file completions to shared gateway endpoints while keeping single-line autocomplete local.
+3. **Flaky refactoring suggestions**: Never accept structural refactors blindly. Wire automated test runners to execute on suggestion acceptance to catch silent logic regressions immediately.
+
+Integrating AI features into your IDE workflow is about augmenting developer judgment, not replacing it. Keep completions scoped, test immediately, and measure developer throughput rather than raw generation volume.

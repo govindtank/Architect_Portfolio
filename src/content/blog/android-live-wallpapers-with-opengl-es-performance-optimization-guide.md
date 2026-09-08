@@ -70,3 +70,20 @@ What this does: Renders all particles in a single draw call, cutting per-frame C
 
 ### Step 3: Sync rendering to the display and throttle on battery saver
 Unthrottled render loops run as fast as possible, wasting battery and causing jank when the system is under load. Sync your loop to the display’s refresh rate using Choreographer, and reduce the target frame rate when battery
+Sync your loop to the display's refresh rate using Choreographer, and reduce the target frame rate when battery saver mode is active:
+
+```kotlin
+val choreographer = Choreographer.getInstance()
+val frameCallback = object : Choreographer.FrameCallback {
+    override def doFrame(frameTimeNanos: Long) {
+        if (isVisible) {
+            renderFrame()
+            choreographer.postFrameCallback(this)
+        }
+    }
+}
+```
+
+### Conclusion and Best Practices
+
+Optimizing live wallpapers in OpenGL ES comes down to three fundamental rules: pause rendering immediately when offscreen, batch draw calls with instanced rendering, and tie updates strictly to hardware refresh cycles. Following these principles ensures smooth 60/120fps animations without noticeable battery drain.

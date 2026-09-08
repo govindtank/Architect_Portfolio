@@ -91,3 +91,12 @@ Verdict: Worth it. The pattern itself is simple: explain what data is used, why,
 | SHAP Mobile | Yes | None | Good | None | Depends |
 | LIME | Yes | None | Good | None | Skip |
 | Core
+| Feature Area | Privacy First | Local-Only Processing | GDPR / CCPA Compliance |
+|--------------|---------------|------------------------|-------------------------|
+| Core Bias Detection | Synthetic counterfactual testing | On-device evaluation | Pre-deployment compliance checks |
+| Model Explainability | Feature attribution (SHAP/LIME) | Lightweight edge surrogates | Right-to-explanation audit trails |
+| User Telemetry | Differential privacy clipping | Ephemeral local caches | Zero unconsented telemetry storage |
+
+### Practical Takeaways
+
+Building ethical AI into mobile apps requires baking accountability into architecture from day one. By isolating user data on-device, validating model predictions against unbiased cohorts, and providing transparent explanations for high-stakes decisions, you safeguard user trust while avoiding regulatory penalties.

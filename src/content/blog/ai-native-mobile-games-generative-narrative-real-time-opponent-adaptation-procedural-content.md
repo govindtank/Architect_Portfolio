@@ -82,3 +82,8 @@ Choose the small models approach when:
 ## My take
 
 I've shipped both. The server-side model felt like the easy win in pre-production, then became a financial and latency nightmare by beta. The
+Unconstrained LLM inference was fun in pre-production, then became a financial and latency nightmare by beta. The solution was caching procedural archetypes and only prompting lightweight models for parameter adjustments.
+
+### Game Architecture Summary
+
+Generative game mechanics thrive when bound by deterministic game loops. Use procedural generators for geometry and rules, and utilize targeted on-device AI models for dialogue nuance and reactive opponent decision trees.

@@ -66,3 +66,8 @@ Choose a single generalist model when:
 ## My Take
 
 For most mobile apps, I'd start with a single generalist model. The complexity tax of multi-agent systems on device is real, and the quality gains only materialize if you invest heavily in per-agent fine
+Specialized local agents require dedicated role definitions, and the quality gains only materialize if you invest heavily in per-agent fine-tuning and structured tool definitions.
+
+### Summary
+
+Local multi-agent architectures on mobile provide unparalleled privacy and offline reliability. By assigning distinct, lightweight SLMs to specialized tasks (parsing, validation, generation) and orchestrating them via deterministic state machines, you achieve production-grade AI behavior entirely on-device.

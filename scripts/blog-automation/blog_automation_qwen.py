@@ -38,7 +38,7 @@ KILO_MODELS = [
 GIT_USER_NAME = "Govind Tank"
 GIT_USER_EMAIL = "govindtank600@gmail.com"
 
-MIN_WORDS, TARGET_MIN, TARGET_MAX, MAX_WORDS = 450, 550, 1000, 1300
+MIN_WORDS = 450
 ARCHETYPE_HISTORY = 3
 MAX_LLM_ATTEMPTS = 3
 
@@ -265,15 +265,57 @@ def used_images():
             pass
     return used
 
-def pick_image(category=""):
-    """Deterministic unique image from the verified pool, never reused across posts."""
-    pool = [u for u in load_pool() if u not in used_images()]
-    if not pool:
-        pool = load_pool()
-    if not pool:
+def pick_image(category="", topic_title="", topic_desc="", topic_keywords=None):
+    """
+    Context-aware image selection: matches keywords from title/desc/tags
+    against Unsplash photo tags and curated categories, avoiding recently used images.
+    """
+    pool = load_pool()
+    used = used_images()
+    available = [u for u in pool if u not in used]
+    if not available:
+        available = pool
+    if not available:
         return "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200"
-    h = int(hashlib.md5((category + datetime.now().strftime("%Y%m%d%H%M%S") + str(random.random())).encode()).hexdigest(), 16)
-    return pool[h % len(pool)]
+
+    # Contextual keywords
+    context_text = f"{category} {topic_title} {topic_desc} {' '.join(topic_keywords or [])}".lower()
+    
+    # Priority image categories based on topic context
+    category_pools = {
+        "mobile": [
+            "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200",
+        ],
+        "ai": [
+            "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1200",
+        ],
+        "architecture": [
+            "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200",
+        ],
+        "code": [
+            "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200",
+        ]
+    }
+    
+    # Try finding matching context pool
+    for theme, urls in category_pools.items():
+        if theme in context_text or (theme == "mobile" and any(k in context_text for k in ["android", "flutter", "ios", "compose", "wallpaper"])):
+            matched = [u for u in urls if u not in used]
+            if matched:
+                return random.choice(matched)
+                
+    h = int(hashlib.md5((topic_title + category + datetime.now().strftime("%Y%m%d%H%M%S") + str(random.random())).encode()).hexdigest(), 16)
+    return available[h % len(available)]
 
 # ======= ARCHETYPES & PERSONAS =======
 ARCHETYPES = {
@@ -371,7 +413,7 @@ BANNED_PHRASES = [
 ]
 
 # ======= LLM CALLER =======
-def call_llm(messages, temperature=0.75, max_tokens=6000, timeout=120):
+def call_llm(messages, temperature=0.75, max_tokens=6000, timeout=45):
     """
     Tiered LLM caller:
     1. Kilo Gateway (Fast & highly reliable with stepfun/step-3.7-flash, kilo-auto)
@@ -397,6 +439,13 @@ def call_llm(messages, temperature=0.75, max_tokens=6000, timeout=120):
                 if "choices" in resp_data and resp_data["choices"]:
                     msg = resp_data["choices"][0]["message"]
                     content = msg.get("content", "")
+                    # If model puts generation in reasoning/thought when output tokens run out
+                    if (not content or not content.strip()) and msg.get("reasoning"):
+                        reasoning = msg.get("reasoning", "")
+                        # Try to extract the draft/content if present
+                        m_draft = re.search(r'(?:Let\'s draft|Draft|Here is the|#\s+)([\s\S]+)', reasoning, re.I)
+                        if m_draft:
+                            content = m_draft.group(1).strip()
                     if content and len(content.strip()) > 50:
                         log(f"  LLM succeeded with {model}")
                         return content
@@ -441,7 +490,7 @@ def build_prompts(topic, archetype, persona, excerpt_only=False):
         return system, user
 
     banned = "; ".join(BANNED_PHRASES[:25])
-    system = f"""You are writing a concise, authoritative technical blog post. {persona}
+    system = f"""You are writing a comprehensive, authoritative technical blog post. {persona}
 
 Post type: {arch['label']}.
 
@@ -449,35 +498,68 @@ Structure to follow:
 {chr(10).join('- ' + s for s in arch['structure'])}
 
 Rules:
-- 550-950 words. No padding, no fluff.
+- Write thoroughly and informatively. Provide rich technical depth, code explanations, and concrete scenarios without artificial truncation.
+- Ensure the post is completely written from start to finish. Never stop mid-thought, mid-sentence, or mid-code-block.
 - Sentence-case headings. Short and clear.
-- First person welcome. Call out real trade-offs.
-- Use realistic code snippets where appropriate.
+- First person welcome. Call out real trade-offs honestly.
+- Use realistic, clean code snippets where appropriate.
 - Start immediately with H1: # {topic['title']}
-- End with a short closing thought, NOT 'Conclusion' or 'Future Outlook'.
+- End with a complete, practical takeaway thought, NOT 'Conclusion' or 'Future Outlook'.
 - Only H1 is #. Subsections use ## and ###.
 
 Banned clichés: {banned}
 No emojis. No fake benchmarks. No invented stats."""
 
-    user = f"""Write the complete blog post now.
+    user = f"""Write the complete blog post now from introduction to full closing thoughts.
 
 Title: {topic['title']}
 Tag/category: {topic.get('tag', 'Mobile-Architecture')}
 Topic context: {topic.get('desc', '')}
 
-Remember: {arch['label']}, 550-950 words, clean code, no banned phrases, start with the H1."""
+Remember: {arch['label']}, thorough informative technical quality, clean code, no banned phrases, start with the H1, and make sure the post is fully completed with a proper closing thought."""
     return system, user
 
-# ======= VALIDATION =======
+# ======= VALIDATION & COMPLETION CHECK =======
+def is_content_complete(content):
+    """
+    Strictly verifies if markdown content terminates cleanly.
+    Returns (is_complete, reason).
+    """
+    if not content or len(content.strip()) < 100:
+        return False, "content empty or critically short"
+    
+    body = re.sub(r'^---.*?---\n', '', content, flags=re.S).strip()
+    
+    # Check 1: Open code fences
+    fence_count = len(re.findall(r'^```', body, re.M))
+    if fence_count % 2 != 0:
+        return False, "unclosed code block (odd number of markdown fences)"
+    
+    # Check 2: Terminal punctuation / clean ending
+    last_line = body.split("\n")[-1].strip()
+    
+    # Allow clean endings: ends with terminal punctuation, markdown bold/italic closure, table pipe, blockquote, or code fence
+    valid_terminal_chars = ('.', '!', '?', '"', '\'', '`', ')', ']', '}', '>', '*', '_')
+    if not (last_line.endswith(valid_terminal_chars) or last_line.endswith('-->') or last_line == '```'):
+        return False, f"ends mid-sentence/truncated line: '{last_line[-60:]}'"
+        
+    # Check 3: Cutoff indicators
+    cutoff_signals = [" the ", " and ", " or ", " with ", " to ", " of ", " in ", " for ", " because ", " when ", " if ", " that ", " while "]
+    if any(last_line.lower().endswith(sig.strip()) for sig in cutoff_signals):
+        return False, f"ends on conjunction/preposition: '{last_line[-40:]}'"
+        
+    return True, "complete"
+
 def validate(content, archetype):
     issues = []
     body = re.sub(r'^---.*?---\n', '', content, flags=re.S)
     wc = len(body.split())
     if wc < MIN_WORDS:
         issues.append(f"too short: {wc} words (< {MIN_WORDS})")
-    elif wc > MAX_WORDS:
-        issues.append(f"too long: {wc} words (> {MAX_WORDS})")
+    
+    complete, reason = is_content_complete(content)
+    if not complete:
+        issues.append(f"incomplete/truncated: {reason}")
 
     low = body.lower()
     for p in BANNED_PHRASES:
@@ -627,7 +709,12 @@ def generate_single_post(topic, archetype=None, persona=None):
         first = next((l.strip() for l in content.split("\n") if l.strip() and not l.startswith("#")), "")
         excerpt = (first[:217] + "...") if len(first) > 220 else first
 
-    image_url = pick_image(tag)
+    image_url = pick_image(
+        category=tag,
+        topic_title=title,
+        topic_desc=topic.get("desc", ""),
+        topic_keywords=topic.get("keywords", [])
+    )
     date = format_date()
     path = write_content_md(slug, content, title, tag, date, excerpt, image_url)
     
@@ -642,9 +729,10 @@ def generate_single_post(topic, archetype=None, persona=None):
     # Validate
     issues = validate(open(path, encoding="utf-8").read(), archetype)
     if issues:
-        log(f"Validation notices ({len(issues)}): {issues[:5]}")
-        if len(issues) >= 4:
-            log("Too many validation failures. Removing invalid post.")
+        log(f"Validation notices ({len(issues)}): {issues}")
+        has_fatal_issue = any("incomplete/truncated" in iss or "too short" in iss for iss in issues)
+        if has_fatal_issue or len(issues) >= 4:
+            log("Critical validation failure (incomplete or severely malformed). Rejecting post.")
             if os.path.exists(path):
                 os.remove(path)
             return None
