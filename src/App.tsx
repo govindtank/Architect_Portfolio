@@ -18,6 +18,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import InteractiveBackground from './components/InteractiveBackground';
 import SystemMascot from './components/SystemMascot';
+import MechanicalFly from './components/MechanicalFly';
 import { BlogPost } from './types';
 
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
   return (
     <div className="min-h-screen relative bg-slate-950 text-slate-100">
       <InteractiveBackground />
+      <MechanicalFly />
       <SystemMascot />
       <Navbar />
       <main className="relative z-10">
